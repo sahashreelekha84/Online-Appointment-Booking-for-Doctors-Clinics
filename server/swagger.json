@@ -1,0 +1,32 @@
+{
+    "swaggerDefinition": {
+      "info": {
+        "title": "Online-Appointment-Booking-for-Doctors-Clinics",
+        "version": "1.0.0",
+        "description": "Online-Appointment-Booking-for-Doctors-Clinics by webskitters",
+        "contact": {
+          "name": "Shreelekha"
+        },
+        "servers": [
+          "http://localhost:1234",
+          "https://online-appointment-booking-for-doctors.onrender.com"
+        ]  
+      },
+      "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth API"
+        },
+        {
+            "name": "Patient",
+            "description": "Patient Details API"
+        }
+    ],
+    "schemes": "['https', 'http']"
+      
+    },
+    "apis": [
+      "app.js",
+      "./app/routes/*.js"
+    ]
+  }
