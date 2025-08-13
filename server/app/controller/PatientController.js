@@ -10,7 +10,7 @@ class PatientController {
             const { name, email, password, address, gender, dob, phone,role } = req.body
             const existemail = await userModel.findOne({ email })
             if (existemail) {
-                res.status(403).json({
+                return res.status(403).json({
                     status: false,
                     message: 'email already exist',
 
