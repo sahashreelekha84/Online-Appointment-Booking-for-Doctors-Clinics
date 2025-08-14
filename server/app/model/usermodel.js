@@ -19,7 +19,8 @@ const userschemaValidate = Joi.object({
     }),
 
   password: Joi.string()
-    .pattern(/^[A-Za-z](?=.*[0-9])(?=.*[^A-Za-z0-9]).{5,}$/)
+    .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d[^A-Za-z0-9]]{6,}$/
+)
     .required()
     .messages({
       'string.pattern.base': 'Password must start with a letter, contain at least one number and one special character.',
