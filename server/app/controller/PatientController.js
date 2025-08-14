@@ -203,6 +203,76 @@ class PatientController {
             })
         }
     }
+      async forgetpassword(req, res) {
+        try {
+            const { email } = req.body;
+
+            if (!email) return res.status(400).json({ message: 'Email is required' });
+
+            const user = await userModel.findOne({ email });
+            if (!user) return res.status(404).json({ message: 'User not found' });
+
+            const token = jwt.sign(
+                { _id: user._id, email: user.email },
+                process.env.JWT_SECRECT_KEY,
+                { expiresIn: '2h' }
+            );
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.my_email,
+                    pass: process.env.my_password,
+                },
+            });
+
+            const resetUrl = `${process.env.Client_url}/resetpassword/${token}`;
+
+            const mailOptions = {
+                from: process.env.my_email,
+                to: email,
+                subject: 'Reset Your Password',
+                html: `<p>Click the link to reset your password:</p><a href="${resetUrl}">${resetUrl}</a>`,
+            };
+
+            await transporter.sendMail(mailOptions);
+
+            return res.status(200).json({
+                status: true,
+                token,
+                message: 'Password reset link sent to your email'
+            });
+        } catch (error) {
+            console.error('Forgot password error:', error.message);
+            return res.status(500).json({ message: 'Server error' });
+        }
+    }
+    async resetpassword(req, res) {
+        try {
+            const { token } = req.params;
+            const { password } = req.body;
+            console.log(password);
+
+            if (!token || !password) {
+                return res.status(400).json({ message: 'Token and password required' });
+            }
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRECT_KEY);
+            const user = await userModel.findOne({ email: decoded.email });
+
+            if (!user) return res.status(404).json({ message: 'User not found' });
+
+            const newHashedPassword = await hashpassword(password);
+            user.password = newHashedPassword;
+            await user.save();
+
+            return res.status(200).json({ message: 'Password reset successful' });
+        } catch (error) {
+            console.error('Reset password error:', error.message);
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+    }
     async dashboard(req, res) {
         try {
             res.status(200).json({
