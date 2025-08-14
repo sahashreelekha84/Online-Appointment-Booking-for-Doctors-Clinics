@@ -33,7 +33,7 @@ class PatientController {
             if (req.file) {
                 pdata.profileImg = req.file.path
             }
-            const { error, value } = userModel.userschemaValidate.validate(pdata)
+            const { error, value } = userschemaValidate.validate(pdata)
             if (error) {
                 return res.send(error.message)
             } else {
