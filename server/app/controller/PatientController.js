@@ -23,14 +23,19 @@ class PatientController {
             if (req.file) {
                 pdata.profileImg = req.file.path
             }
-            const data = await pdata.save()
+            const { error, value } = userModel.userschemaValidate.validate(pdata)
+            if (error) {
+                return res.send(error.message)
+            } else {
+            const data = await pdata.save(value)
             res.status(201).json({
                 status: true,
                 message: 'Registation Successfully',
                 data: data
 
             })
-        } catch (error) {
+        } 
+    }catch (error) {
             res.status(500).json({
                 status: false,
                 message: error.message,
