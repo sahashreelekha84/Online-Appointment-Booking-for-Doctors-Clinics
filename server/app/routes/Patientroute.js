@@ -93,7 +93,7 @@ router.post('/patient/register', pateintimageupload.single('profileImg'), Patien
 router.post('/patient/login', PatientController.login)
 /**
  * @swagger
- * /api/patient/profile:
+ * /api/patient/dashboard:
  *   get:
  *     summary: Get patient Dashboard
  *     tags:
