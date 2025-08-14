@@ -13,40 +13,36 @@ const router = express.Router()
  *     summary: Create Account
  *     tags:
  *       - Patient
- *     consumes:
- *       - multipart/form-data
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: formData
- *         name: profileImg
- *         type: file
- *         description: Profile image file
- *       - in: formData
- *         name: name
- *         type: string
- *         required: true
- *       - in: formData
- *         name: email
- *         type: string
- *         required: true
- *       - in: formData
- *         name: phone
- *         type: string
- *       - in: formData
- *         name: password
- *         type: string
- *         required: true
- *       - in: formData
- *         name: address
- *         type: string
- *       - in: formData
- *         name: gender
- *         type: string
- *       - in: formData
- *         name: dob
- *         type: string
- *         description: Date of birth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               profileImg:
+ *                 type: string
+ *                 format: binary
+ *                 description: Profile image file
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               dob:
+ *                 type: string
+ *                 description: Date of birth
  *     responses:
  *       200:
  *         description: Patient registered successfully
