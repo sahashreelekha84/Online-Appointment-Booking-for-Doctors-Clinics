@@ -177,6 +177,7 @@ router.post('/patient/login', PatientController.login)
  *       500:
  *         description: Server Error
  */
+
 router.post('/patient/forgetpassword',PatientController.forgetpassword)
 /**
  * @swagger
