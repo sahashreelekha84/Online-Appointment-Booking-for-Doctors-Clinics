@@ -2,6 +2,16 @@ const { hashedpassword, comparepassword } = require("../middleware/AuthCheck")
 const {userModel} = require("../model/usermodel")
 const Jwt = require('jsonwebtoken')
 const path = require('path')
+const nodemailer = require('nodemailer')
+const crypto = require('crypto')
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.my_email,
+        pass: process.env.my_password
+    }
+})
+const generateotp = () => crypto.randomInt(100000, 999999).toString()
 class PatientController {
     async register(req, res) {
         console.log(req.body);
@@ -28,6 +38,16 @@ class PatientController {
                 return res.send(error.message)
             } else {
             const data = await pdata.save(value)
+             await transporter.sendMail({
+                from: 'shreelekhasaha2000@gmail.com',
+                to: email,
+                subject: 'OTP Verification',
+
+                text: `Your OTP is: ${otp}`,
+                html: `<p>Dear ${data.fullname},</p><p>Thank you for signing up with our website. To complete your registration, please verify your email address by entering the following one-time password (OTP)</p>
+                       <h2>OTP: ${otp}</h2>
+                       <p>This OTP is valid for 10 minutes. If you didn't request this OTP, please ignore this email.</p>`
+            })
             res.status(201).json({
                 status: true,
                 message: 'Registation Successfully',
@@ -42,6 +62,87 @@ class PatientController {
 
             })
         }
+    }
+    async verifyotp(req, res) {
+        try {
+            const { email, otp } = req.body;
+
+            if (!email || !otp) {
+                return res.status(400).json({ message: 'Email and OTP are required' });
+            }
+
+            const user = await userModel.findOne({ email });
+
+            if (!user) {
+                return res.status(400).json({ message: 'User not found' });
+            }
+            
+            if (user.isVerified) {
+                return res.status(400).json({ message: 'User already verified' });
+            }
+
+            if (String(user.otp) !== String(otp)) {
+                return res.status(400).json({ message: 'Invalid OTP' });
+            }
+
+            if (user.otpExpiry < new Date()) {
+                return res.status(400).json({ message: 'OTP has expired' });
+            }
+
+            user.isVerified = true;
+            user.otp = undefined;
+            user.otpExpiry = undefined;
+
+            await user.save();
+
+            return res.status(200).json({ message: 'User verified successfully' });
+
+        } catch (error) {
+            console.error('Verify OTP error:', error.message);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+
+
+    async resendotp(req, res) {
+        try {
+            const { email } = req.body
+            const user = await userModel.findOne({ email })
+            if (!user)
+                return res.status(400).json({
+                    message: 'User not found'
+                })
+            if (user.isVerified)
+                return res.status(400).json({
+                    message: 'User already verified'
+                })
+
+            const otp = generateotp()
+            user.otp = otp
+            user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
+            console.log("Expires at:", user.otpExpiry.toString());
+            await user.save()
+            await transporter.sendMail({
+                from: 'shreelekhasaha2000@gmail.com',
+                to: email,
+                subject: 'Resend OTP Verification',
+                text: `Your new OTP is: ${otp}`,
+                html: `<p>Dear ${user.name},</p><p>Thank you for signing up with our website. To complete your registration, please verify your email address by entering the following one-time password (OTP)</p>
+                       <h2>OTP: ${otp}</h2>
+                       <p>This OTP is valid for 10 minutes. If you didn't request this OTP, please ignore this email.</p>`
+
+            })
+            return res.status(200).json({
+                message: 'OTP resent successfully.'
+            })
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: error.message,
+            });
+        }
+
     }
     async login(req, res) {
         try {
