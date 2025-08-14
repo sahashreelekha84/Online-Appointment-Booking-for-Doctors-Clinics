@@ -1,5 +1,5 @@
 const { hashedpassword, comparepassword } = require("../middleware/AuthCheck")
-const userModel = require("../model/usermodel")
+const {userModel} = require("../model/usermodel")
 const Jwt = require('jsonwebtoken')
 const path = require('path')
 class PatientController {
@@ -45,6 +45,8 @@ class PatientController {
     }
     async login(req, res) {
         try {
+            console.log(req.body);
+            
             const { email, password } = req.body
             const user = await userModel.findOne({ email })
             if (!user) {
