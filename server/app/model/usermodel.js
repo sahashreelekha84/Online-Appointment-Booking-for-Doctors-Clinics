@@ -1,5 +1,5 @@
-const mongoose=require('mongoose')
-const Schema=mongoose.Schema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const Joi = require('joi');
 
 const userschemaValidate = Joi.object({
@@ -19,8 +19,8 @@ const userschemaValidate = Joi.object({
     }),
 
   password: Joi.string()
-    .pattern(/^[A-Za-z](?=.*\d)(?=.*[^A-Za-z0-9]).{5,}$/
-)
+    .min(6)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9])'))
     .required()
     .messages({
       'string.pattern.base': 'Password must start with a letter, contain at least one number and one special character.',
@@ -30,10 +30,7 @@ const userschemaValidate = Joi.object({
 
   role: Joi.string().valid('admin', 'Doctor', 'Patient').optional(),
 
-  address: Joi.object({
-    line1: Joi.string().allow(''),
-    line2: Joi.string().allow(''),
-  }).optional(),
+  address: Joi.optional(),
 
   gender: Joi.string().valid('Male', 'Female', 'Other', 'Not Selected').optional(),
 
@@ -41,27 +38,27 @@ const userschemaValidate = Joi.object({
 
   phone: Joi.string().pattern(/^\d{10}$/).optional(),
 });
-const userSchema=new Schema({
+const userSchema = new Schema({
 
-  name: {type:String,required:true},
-  email: {type:String,required:true},
-  password: {type:String,required:true},
-  profileImg:{type:String,default:""},
-  role:{type:String, enum: ['admin', 'Doctor', 'Patient'],default:'Patient'},
-  address:{type:Object,default:{line1:'',line2:''}},
-  gender:{type:String,default:"Not Selected"},
-  dob:{type:String,default:"Not Selected"},
-  phone:{type:String,default:'0000000000'},
-    otp:{
-         type:String,
-          require:true
-    },
-    otpExpiry:{
-        type:Date
-    },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  profileImg: { type: String, default: "" },
+  role: { type: String, enum: ['admin', 'Doctor', 'Patient'], default: 'Patient' },
+  address: { type: Object, default: { line1: '', line2: '' } },
+  gender: { type: String, default: "Not Selected" },
+  dob: { type: String, default: "Not Selected" },
+  phone: { type: String, default: '0000000000' },
+  otp: {
+    type: String,
+    require: true
+  },
+  otpExpiry: {
+    type: Date
+  },
 
 
 
-},{timestamps:true})
-const userModel=mongoose.model('user',userSchema)
-module.exports={userModel,userschemaValidate}
+}, { timestamps: true })
+const userModel = mongoose.model('user', userSchema)
+module.exports = { userModel, userschemaValidate }
