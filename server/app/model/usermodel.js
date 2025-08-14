@@ -51,6 +51,13 @@ const userSchema=new Schema({
   gender:{type:String,default:"Not Selected"},
   dob:{type:String,default:"Not Selected"},
   phone:{type:String,default:'0000000000'},
+    otp:{
+         type:String,
+          require:true
+    },
+    otpExpiry:{
+        type:Date
+    },
 
 
 
