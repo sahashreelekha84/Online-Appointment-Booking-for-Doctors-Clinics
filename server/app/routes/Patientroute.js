@@ -60,6 +60,68 @@ const router = express.Router()
 router.post('/patient/register', pateintimageupload.single('profileImg'), PatientController.register)
 /**
  * @swagger
+ * /api/patient/verifyemail:
+ *   post:
+ *     summary: User login
+ *     tags:
+ *       - Patient
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *                otp:
+ *                 type: string
+ *                 example: 1234
+ *     responses:
+ *       200:
+ *         description: Patient Email Verified  successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+router.post('/patient/verifyemail', PatientController.verifyotp)
+/**
+ * @swagger
+ * /api/patient/resendotp:
+ *   post:
+ *     summary: User login
+ *     tags:
+ *       - Patient
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *              
+ *     responses:
+ *       200:
+ *         description: resend otp in successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+router.post('/patient/resendotp', PatientController.resendotp)
+/**
+ * @swagger
  * /api/patient/login:
  *   post:
  *     summary: User login
@@ -89,7 +151,6 @@ router.post('/patient/register', pateintimageupload.single('profileImg'), Patien
  *       500:
  *         description: Server Error
  */
-
 router.post('/patient/login', PatientController.login)
 /**
  * @swagger
