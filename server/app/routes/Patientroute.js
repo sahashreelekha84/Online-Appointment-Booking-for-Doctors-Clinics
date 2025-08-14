@@ -94,7 +94,7 @@ router.post('/patient/verifyemail', PatientController.verifyotp)
  * @swagger
  * /api/patient/resendotp:
  *   post:
- *     summary: User login
+ *     summary: Resend Otp
  *     tags:
  *       - Patient
  *     requestBody:
