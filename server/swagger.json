@@ -1,20 +1,38 @@
-
 {
   "swaggerDefinition": {
+    "openapi": "3.0.0",
     "info": {
       "title": "Online-Appointment-Booking-for-Doctors-Clinics",
       "version": "1.0.0",
       "description": "Online-Appointment-Booking-for-Doctors-Clinics by webskitters",
       "contact": {
         "name": "Shreelekha"
-      },
-      "servers": [
-        "http://localhost:1234",
-        {
-          "url": "https://online-appointment-booking-for-doctors.onrender.com/api-docs"
-        }
-      ]
+      }
     },
+    "components": {
+      "securitySchemes": {
+        "Token": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "x-access-token",
+          "description": "Custom token for API authentication"
+        }
+      }
+    },
+    "security": [
+      {
+        "Token": []
+      }
+    ],
+    "servers": [
+
+      {
+        "url": "http://localhost:3005"
+      },
+      {
+        "url": "https://online-appointment-booking-for-doctors.onrender.com/api-docs"
+      }
+    ],
     "tags": [
       {
         "name": "Patient",
@@ -25,7 +43,10 @@
         "description": "Doctor Details API"
       }
     ],
-    "schemes": "['https', 'http']"
+    "schemes": [
+      "https",
+      "http"
+    ]
   },
   "apis": [
     "app.js",
