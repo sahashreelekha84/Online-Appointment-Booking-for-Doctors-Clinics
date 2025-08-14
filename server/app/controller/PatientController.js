@@ -17,7 +17,7 @@ class PatientController {
         console.log(req.body);
         
         try {
-            const { name, email, password, address, gender, dob, phone,role } = req.body
+            const { name, email, password, address, gender, dob, phone,role,otp,otpExpiry } = req.body
             const existemail = await userModel.findOne({ email })
             if (existemail) {
                 return res.status(403).json({
