@@ -26,6 +26,10 @@ class PatientController {
 
                 })
             }
+                  const { error, value } = userschemaValidate.validate(req.body)
+            if (error) {
+                return res.send(error.message)
+            }
             const hash = await hashedpassword(password)
             const pdata = new userModel({
                 name, email, password: hash, address, gender, dob, phone, role,otp,otpExpiry
@@ -33,10 +37,7 @@ class PatientController {
             if (req.file) {
                 pdata.profileImg = req.file.path
             }
-            const { error, value } = userschemaValidate.validate(pdata)
-            if (error) {
-                return res.send(error.message)
-            } else {
+       
             const data = await pdata.save(value)
              await transporter.sendMail({
                 from: 'shreelekhasaha2000@gmail.com',
@@ -54,7 +55,7 @@ class PatientController {
                 data: data
 
             })
-        } 
+        
     }catch (error) {
             res.status(500).json({
                 status: false,
