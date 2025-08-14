@@ -62,7 +62,7 @@ router.post('/patient/register', pateintimageupload.single('profileImg'), Patien
  * @swagger
  * /api/patient/verifyemail:
  *   post:
- *     summary: User login
+ *     summary: Verify patient email with OTP
  *     tags:
  *       - Patient
  *     requestBody:
@@ -73,22 +73,23 @@ router.post('/patient/register', pateintimageupload.single('profileImg'), Patien
  *             type: object
  *             required:
  *               - email
- *               - password
+ *               - otp
  *             properties:
  *               email:
  *                 type: string
  *                 example: user@example.com
- *                otp:
+ *               otp:
  *                 type: string
  *                 example: 1234
  *     responses:
  *       200:
- *         description: Patient Email Verified  successfully
+ *         description: Patient email verified successfully
  *       400:
- *         description: Bad Request
+ *         description: Invalid OTP or email
  *       500:
- *         description: Server Error
+ *         description: Server error
  */
+
 router.post('/patient/verifyemail', PatientController.verifyotp)
 /**
  * @swagger
