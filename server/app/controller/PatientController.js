@@ -28,7 +28,7 @@ class PatientController {
             }
             const hash = await hashedpassword(password)
             const pdata = new userModel({
-                name, email, password: hash, address, gender, dob, phone, role
+                name, email, password: hash, address, gender, dob, phone, role,otp,otpExpiry
             })
             if (req.file) {
                 pdata.profileImg = req.file.path
