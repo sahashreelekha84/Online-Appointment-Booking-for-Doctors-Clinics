@@ -17,7 +17,7 @@ class PatientController {
         console.log(req.body);
         
         try {
-            const { name, email, password, address, gender, dob, phone,role,otp,otpExpiry } = req.body
+            const { name, email, password, address, gender, dob, phone,role } = req.body
             const existemail = await userModel.findOne({ email })
             if (existemail) {
                 return res.status(403).json({
@@ -30,6 +30,9 @@ class PatientController {
             if (error) {
                 return res.send(error.message)
             }
+             const otp = generateotp()
+            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
+            console.log(otpExpiry.toString());
             const hash = await hashedpassword(password)
             const pdata = new userModel({
                 name, email, password: hash, address, gender, dob, phone, role,otp,otpExpiry
@@ -166,6 +169,11 @@ class PatientController {
 
                 })
             }
+            if (!user.isVerified) {
+        return res.status(400).json({
+          message: 'Email not Verified. Please Verify OTP'
+        })
+      }
             const token = Jwt.sign({
                 _id: user._id,
                 name: user.name,
