@@ -19,7 +19,7 @@ const userschemaValidate = Joi.object({
     }),
 
   password: Joi.string()
-    .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d[^A-Za-z0-9]]{6,}$/
+    .pattern(/^[A-Za-z](?=.*\d)(?=.*[^A-Za-z0-9]).{5,}$/
 )
     .required()
     .messages({
