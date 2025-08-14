@@ -186,6 +186,12 @@ router.post('/patient/forgetpassword',PatientController.forgetpassword)
  *     summary: reset_password
  *     tags:
  *       - Patient
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
