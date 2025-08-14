@@ -58,7 +58,77 @@ const router = express.Router()
 
 
 router.post('/patient/register', pateintimageupload.single('profileImg'), PatientController.register)
+/**
+* @swagger
+* /api/patient/login:
+*   post:
+*     summary: user Login
+*     tags:
+*       - Patient
+*     produces:
+*       - application/json
+*     parameters:
+ *      - in: body
+ *        name: user Login
+ *        description: Patient login create.
+ *        schema:
+ *          type: object
+ *          required:
+ *            - email
+ *            - password
+ *          properties:
+ *            email:
+ *              type: string
+ *            password:
+ *              type: string
+*     responses:
+*        200:
+*          description: Patient Login successfully
+*        400:
+*          description: Bad Request
+*        500:
+*          description: Server Error
+*/
+
 router.post('/patient/login', PatientController.login)
+/**
+  * @swagger
+  * /api/patient/dashboard:
+  *   get:
+  *     summary: Patient dashboard
+  *     tags:
+  *       - Patient
+  *     security:
+  *       - Token: []
+  *     produces:
+  *       - application/json
+  *     responses:
+  *       200:
+  *         description: Patient access this page
+  *       400:
+  *         description: Bad Request
+  *       500:
+  *         description: Server Error
+*/
 router.get('/patient/dashboard', AuthCheck, PatientController.dashboard)
+/**
+  * @swagger
+  * /api/patient/profile:
+  *   get:
+  *     summary: Patient profile
+  *     tags:
+  *       - Patient
+  *     security:
+  *       - Token: []
+  *     produces:
+  *       - application/json
+  *     responses:
+  *       200:
+  *         description: Patient access this page
+  *       400:
+  *         description: Bad Request
+  *       500:
+  *         description: Server Error
+*/
 router.get('/patient/profile', AuthCheck, PatientController.profile)
 module.exports = router
