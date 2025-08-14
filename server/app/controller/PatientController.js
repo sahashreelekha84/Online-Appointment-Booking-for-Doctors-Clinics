@@ -1,5 +1,5 @@
 const { hashedpassword, comparepassword } = require("../middleware/AuthCheck")
-const {userModel} = require("../model/usermodel")
+const {userModel, userschemaValidate} = require("../model/usermodel")
 const Jwt = require('jsonwebtoken')
 const path = require('path')
 const nodemailer = require('nodemailer')
