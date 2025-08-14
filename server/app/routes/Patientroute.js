@@ -102,7 +102,7 @@ router.post('/patient/verifyemail', PatientController.verifyotp)
  *             type: object
  *             required:
  *               - email
- *               - password
+ 
  *             properties:
  *               email:
  *                 type: string
@@ -151,6 +151,67 @@ router.post('/patient/resendotp', PatientController.resendotp)
 router.post('/patient/login', PatientController.login)
 /**
  * @swagger
+ * /api/patient/forgetpassword:
+ *   post:
+ *     summary: Forget_password
+ *     tags:
+ *       - Patient
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *              
+ *     responses:
+ *       200:
+ *         description: Email get  successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+router.post('/patient/forgetpassword',PatientController.forgetpassword)
+/**
+ * @swagger
+ * /api/patient/resetpassword/:token:
+ *   post:
+ *     summary: reset_password
+ *     tags:
+ *       - Patient
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: SomePassword123!
+ *     responses:
+ *       200:
+ *         description: resetpassword sent successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+router.post('/patient/resetpassword/:token',PatientController.resetpassword)
+/**
+ * @swagger
  * /api/patient/dashboard:
  *   get:
  *     summary: Get patient Dashboard
@@ -169,6 +230,7 @@ router.post('/patient/login', PatientController.login)
  *       401:
  *         description: Unauthorized
  */
+
 router.get('/patient/dashboard', AuthCheck, PatientController.dashboard)
 /**
  * @swagger
