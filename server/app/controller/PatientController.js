@@ -15,6 +15,8 @@ const generateotp = () => crypto.randomInt(100000, 999999).toString()
 class PatientController {
     async register(req, res) {
         console.log(req.body);
+        console.log(req.file);
+        
         
         try {
             const { name, email, password, address, gender, dob, phone,role } = req.body
@@ -273,6 +275,7 @@ class PatientController {
             return res.status(400).json({ message: 'Invalid or expired token' });
         }
 
+        
     }
     async dashboard(req, res) {
         try {
