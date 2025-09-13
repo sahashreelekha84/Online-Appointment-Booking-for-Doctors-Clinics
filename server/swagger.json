@@ -26,11 +26,13 @@
     ],
     "servers": [
 
-      {
-        "url": "http://localhost:3005"
-      },
+    
       {
         "url": "https://online-appointment-booking-for-doctors.onrender.com/api-docs"
+      } ,
+      
+      {
+        "url": "http://localhost:3005"
       }
     ],
     "tags": [
