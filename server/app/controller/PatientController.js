@@ -124,7 +124,7 @@ class PatientController {
         });
 
         if (req.file) {
-            pdata.profileImg = req.file.filename;
+            pdata.profileImg = req.file.path;
         }
 
         const data = await pdata.save();
