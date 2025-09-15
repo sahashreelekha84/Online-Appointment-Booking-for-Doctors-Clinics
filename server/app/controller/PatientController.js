@@ -70,99 +70,98 @@ class PatientController {
     //         })
     //     }
     // }
-   async register(req, res) {
-    try {
-        console.log("Body:", req.body);
-        console.log("File:", req.file);
+    async register(req, res) {
+        try {
+            console.log("Body:", req.body);
+            console.log("File:", req.file);
 
-        const { name, email, password, address, gender, dob, phone } = req.body;
+            const { name, email, password, address, gender, dob, phone } = req.body;
 
-        
-        const { error } = userschemaValidate.validate(req.body);
-        if (error) {
-            return res.status(400).json({
-                status: false,
-                message: error.details[0].message,
+
+            const { error } = userschemaValidate.validate(req.body);
+            if (error) {
+                return res.status(400).json({
+                    status: false,
+                    message: error.details[0].message,
+                });
+            }
+
+
+            const existemail = await userModel.findOne({ email });
+            if (existemail) {
+                return res.status(403).json({
+                    status: false,
+                    message: "Email already exists",
+                });
+            }
+
+
+            const role = await Role.findOne({ name: "patient" });
+            if (!role) {
+                return res.status(500).json({
+                    status: false,
+                    message: "Default role not found (patient)",
+                });
+            }
+
+
+            const otp = generateotp();
+            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+            const hash = await hashedpassword(password);
+
+
+            const pdata = new userModel({
+                name,
+                email,
+                password: hash,
+                address,
+                gender,
+                dob,
+                phone,
+                roleId: role._id,
+                otp,
+                otpExpiry,
             });
-        }
 
-       
-        const existemail = await userModel.findOne({ email });
-        if (existemail) {
-            return res.status(403).json({
-                status: false,
-                message: "Email already exists",
-            });
-        }
+            if (req.file) {
+                pdata.profileImg = `uploads/patient/${req.file.filename}`;
+            }
 
-     
-        const role = await Role.findOne({ name: "patient" });
-        if (!role) {
-            return res.status(500).json({
-                status: false,
-                message: "Default role not found (patient)",
-            });
-        }
+            const data = await pdata.save();
 
-    
-        const otp = generateotp();
-        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-        const hash = await hashedpassword(password);
 
-       
-        const pdata = new userModel({
-            name,
-            email,
-            password: hash,
-            address,
-            gender,
-            dob,
-            phone,
-            roleId: role._id, 
-            otp,
-            otpExpiry,
-        });
-
-        if (req.file) {
-            pdata.profileImg = req.file.path;
-        }
-
-        const data = await pdata.save();
-
-     
-        await transporter.sendMail({
-            from: "shreelekhasaha2000@gmail.com",
-            to: email,
-            subject: "OTP Verification",
-            html: `
+            await transporter.sendMail({
+                from: "shreelekhasaha2000@gmail.com",
+                to: email,
+                subject: "OTP Verification",
+                html: `
                 <p>Dear ${data.name},</p>
                 <p>Thank you for signing up. Please verify your email using this OTP:</p>
                 <h2>${otp}</h2>
                 <p>This OTP is valid for 10 minutes.</p>
             `,
-        });
+            });
 
 
-        // const baseUrl = `${req.protocol}://${req.get("host")}`;
 
-        res.status(201).json({
-            status: true,
-            message: "Registration Successful",
-            // data: {
-            //     ...user.toObject(),
-            //     profileImg: user.profileImg
-            //         ? `${baseUrl}/uploads/patients/${user.profileImg}`
-            //         : null,
-            // },
-            data:data
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: false,
-            message: error.message,
-        });
+            const baseUrl = `${req.protocol}://${req.get("host")}`;
+            res.status(201).json({
+                status: true,
+                message: "Registration Successful",
+                data: {
+                    ...data.toObject(),
+                    profileImg: data.profileImg
+                        ? `${baseUrl}/${data.profileImg}`
+                        : null,
+                },
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: false,
+                message: error.message,
+            });
+        }
     }
-}
 
 
     async verifyotp(req, res) {
