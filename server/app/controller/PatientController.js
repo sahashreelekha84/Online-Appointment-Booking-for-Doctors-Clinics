@@ -148,13 +148,13 @@ class PatientController {
         res.status(201).json({
             status: true,
             message: "Registration Successful",
-            // data: {
-            //     ...user.toObject(),
-            //     profileImg: user.profileImg
-            //         ? `${baseUrl}/uploads/patients/${user.profileImg}`
-            //         : null,
-            // },
-            data:data
+            data: {
+                ...user.toObject(),
+                profileImg: user.profileImg
+                    ? `${baseUrl}/uploads/patients/${user.profileImg}`
+                    : null,
+            },
+            // data:data
         });
     } catch (error) {
         res.status(500).json({
