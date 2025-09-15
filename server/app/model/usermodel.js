@@ -44,7 +44,7 @@ const userSchema = new Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   profileImg: { type: String, default: "" },
-  role: { type: String, enum: ['admin', 'Doctor', 'Patient'], default: 'Patient' },
+  roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
   address: { type: Object, default: { line1: '', line2: '' } },
   gender: { type: String, default: "Not Selected" },
   dob: { type: String, default: "Not Selected" },
@@ -56,10 +56,10 @@ const userSchema = new Schema({
   otpExpiry: {
     type: Date
   },
-  isVerified:{
-        type:Boolean,
-        default:false
-    },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
 
 
 }, { timestamps: true })
