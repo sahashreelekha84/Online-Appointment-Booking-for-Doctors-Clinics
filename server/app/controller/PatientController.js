@@ -1,5 +1,5 @@
 const { hashedpassword, comparepassword } = require("../middleware/AuthCheck")
-const {userModel, userschemaValidate} = require("../model/usermodel")
+const { userModel, userschemaValidate } = require("../model/usermodel")
 const Jwt = require('jsonwebtoken')
 const path = require('path')
 const nodemailer = require('nodemailer')
@@ -13,62 +13,150 @@ const transporter = nodemailer.createTransport({
 })
 const generateotp = () => crypto.randomInt(100000, 999999).toString()
 class PatientController {
+    // async register(req, res) {
+    //     console.log(req.body);
+    //     console.log(req.file);
+
+
+    //     try {
+    //         const { name, email, password, address, gender, dob, phone,role } = req.body
+    //         const existemail = await userModel.findOne({ email })
+    //         if (existemail) {
+    //             return res.status(403).json({
+    //                 status: false,
+    //                 message: 'email already exist',
+
+    //             })
+    //         }
+    //               const { error, value } = userschemaValidate.validate(req.body)
+    //         if (error) {
+    //             return res.send(error.message)
+    //         }
+    //          const otp = generateotp()
+    //         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
+    //         console.log(otpExpiry.toString());
+    //         const hash = await hashedpassword(password)
+    //         const pdata = new userModel({
+    //             name, email, password: hash, address, gender, dob, phone, role,otp,otpExpiry
+    //         })
+    //         if (req.file) {
+    //             pdata.profileImg = req.file.path
+    //         }
+
+    //         const data = await pdata.save(value)
+    //          await transporter.sendMail({
+    //             from: 'shreelekhasaha2000@gmail.com',
+    //             to: email,
+    //             subject: 'OTP Verification',
+
+    //             text: `Your OTP is: ${otp}`,
+    //             html: `<p>Dear ${data.name},</p><p>Thank you for signing up with our website. To complete your registration, please verify your email address by entering the following one-time password (OTP)</p>
+    //                    <h2>OTP: ${otp}</h2>
+    //                    <p>This OTP is valid for 10 minutes. If you didn't request this OTP, please ignore this email.</p>`
+    //         })
+    //         res.status(201).json({
+    //             status: true,
+    //             message: 'Registation Successfully',
+    //             data: data
+
+    //         })
+
+    // }catch (error) {
+    //         res.status(500).json({
+    //             status: false,
+    //             message: error.message,
+
+    //         })
+    //     }
+    // }
     async register(req, res) {
-        console.log(req.body);
-        console.log(req.file);
-        
-        
         try {
-            const { name, email, password, address, gender, dob, phone,role } = req.body
-            const existemail = await userModel.findOne({ email })
+            console.log("Body:", req.body);
+            console.log("File:", req.file);
+
+            const { name, email, password, address, gender, dob, phone, role } = req.body;
+
+            // ✅ Joi validation
+            const { error } = userschemaValidate.validate(req.body);
+            if (error) {
+                return res.status(400).json({
+                    status: false,
+                    message: error.details[0].message,
+                });
+            }
+
+            // ✅ Check if email already exists
+            const existemail = await userModel.findOne({ email });
             if (existemail) {
                 return res.status(403).json({
                     status: false,
-                    message: 'email already exist',
+                    message: "Email already exists",
+                });
+            }
 
-                })
-            }
-                  const { error, value } = userschemaValidate.validate(req.body)
-            if (error) {
-                return res.send(error.message)
-            }
-             const otp = generateotp()
-            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
-            console.log(otpExpiry.toString());
-            const hash = await hashedpassword(password)
+            // ✅ Generate OTP
+            const otp = generateotp();
+            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+            // ✅ Hash password
+            const hash = await hashedpassword(password);
+
+            // ✅ Create user
             const pdata = new userModel({
-                name, email, password: hash, address, gender, dob, phone, role,otp,otpExpiry
-            })
-            if (req.file) {
-                pdata.profileImg = req.file.path
-            }
-       
-            const data = await pdata.save(value)
-             await transporter.sendMail({
-                from: 'shreelekhasaha2000@gmail.com',
-                to: email,
-                subject: 'OTP Verification',
+                name,
+                email,
+                password: hash,
+                address,
+                gender,
+                dob,
+                phone,
+                role,
+                otp,
+                otpExpiry,
+            });
 
-                text: `Your OTP is: ${otp}`,
-                html: `<p>Dear ${data.name},</p><p>Thank you for signing up with our website. To complete your registration, please verify your email address by entering the following one-time password (OTP)</p>
-                       <h2>OTP: ${otp}</h2>
-                       <p>This OTP is valid for 10 minutes. If you didn't request this OTP, please ignore this email.</p>`
-            })
+            // ✅ Save profile image if uploaded
+            if (req.file) {
+                pdata.profileImg = req.file.filename; // store filename, not path
+            }
+
+            // ✅ Save user
+            const data = await pdata.save();
+
+            // ✅ Send OTP email
+            await transporter.sendMail({
+                from: "shreelekhasaha2000@gmail.com",
+                to: email,
+                subject: "OTP Verification",
+                html: `
+        <p>Dear ${data.name},</p>
+        <p>Thank you for signing up. Please verify your email using this OTP:</p>
+        <h2>${otp}</h2>
+        <p>This OTP is valid for 10 minutes.</p>
+      `,
+            });
+
+            // ✅ Send response with accessible image URL
+            const baseUrl = `${req.protocol}://${req.get("host")}`;
+
             res.status(201).json({
                 status: true,
-                message: 'Registation Successfully',
-                data: data
-
-            })
-        
-    }catch (error) {
+                message: "Registration Successful",
+                data: {
+                    ...data.toObject(),
+                    profileImg: data.profileImg
+                        ? `${baseUrl}/uploads/patients/${data.profileImg}`
+                        : null,
+                },
+            });
+        } catch (error) {
             res.status(500).json({
                 status: false,
                 message: error.message,
-
-            })
+            });
         }
     }
+
     async verifyotp(req, res) {
         try {
             const { email, otp } = req.body;
@@ -82,7 +170,7 @@ class PatientController {
             if (!user) {
                 return res.status(400).json({ message: 'User not found' });
             }
-            
+
             if (user.isVerified) {
                 return res.status(400).json({ message: 'User already verified' });
             }
@@ -153,7 +241,7 @@ class PatientController {
     async login(req, res) {
         try {
             console.log(req.body);
-            
+
             const { email, password } = req.body
             const user = await userModel.findOne({ email })
             if (!user) {
@@ -172,10 +260,10 @@ class PatientController {
                 })
             }
             if (!user.isVerified) {
-        return res.status(400).json({
-          message: 'Email not Verified. Please Verify OTP'
-        })
-      }
+                return res.status(400).json({
+                    message: 'Email not Verified. Please Verify OTP'
+                })
+            }
             const token = Jwt.sign({
                 _id: user._id,
                 name: user.name,
@@ -206,7 +294,7 @@ class PatientController {
         }
     }
 
-  async forgetpassword(req, res) {
+    async forgetpassword(req, res) {
         try {
             const { email } = req.body;
 
@@ -275,14 +363,14 @@ class PatientController {
             return res.status(400).json({ message: 'Invalid or expired token' });
         }
 
-        
+
     }
     async dashboard(req, res) {
         try {
             res.status(200).json({
                 status: true,
                 message: 'Welcome To Patient Dashboard',
-                data:req.user
+                data: req.user
             })
         } catch (error) {
             res.status(500).json({
@@ -291,12 +379,12 @@ class PatientController {
             })
         }
     }
-     async profile(req, res) {
+    async profile(req, res) {
         try {
             res.status(200).json({
                 status: true,
                 message: 'Patient Profile Fetched Successfully',
-                data:req.user
+                data: req.user
             })
         } catch (error) {
             res.status(500).json({

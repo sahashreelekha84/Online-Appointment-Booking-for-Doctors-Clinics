@@ -24,9 +24,10 @@ app.use('/api',doctorroute)
 
 const patientroute=require('./app/routes/Patientroute')
 app.use('/api',patientroute)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 const Adminroute=require('./app/routes/Adminroute')
 app.use('/api/admin',Adminroute)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const port = process.env.PORT || 3006;
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`);
