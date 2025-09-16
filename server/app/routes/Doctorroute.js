@@ -142,6 +142,74 @@ router.post('/doctor/change-password',AuthCheck,DoctorController.setPassword)
 router.post('/doctor/updateprofile',AuthCheck,doctorimageupload.single('profileImg'),DoctorController.updateDoctors)
 /**
  * @swagger
+ * /api/doctor/forgetpassword:
+ *   post:
+ *     summary: Forget_password
+ *     tags:
+ *       - Patient
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *              
+ *     responses:
+ *       200:
+ *         description: Email get  successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+
+router.post('/doctor/forgetpassword',DoctorController.forgetpassword)
+/**
+ * @swagger
+ * /api/doctor/resetpassword/:token:
+ *   post:
+ *     summary: reset_password
+ *     tags:
+ *       - Patient
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: SomePassword123!
+ *     responses:
+ *       200:
+ *         description: resetpassword sent successfully
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server Error
+ */
+router.post('/doctor/resetpassword/:token',DoctorController.resetpassword)
+/**
+ * @swagger
  * /api/docter/dashboard:
  *   get:
  *     summary: Get Doctor Dashboard
@@ -161,7 +229,7 @@ router.post('/doctor/updateprofile',AuthCheck,doctorimageupload.single('profileI
  *         description: Unauthorized
  */
 
-router.get('/docter/dashboard',AuthCheck,DoctorController.doctordashboard)
+router.get('/doctor/dashboard',AuthCheck,DoctorController.doctordashboard)
 /**
  * @swagger
  * /api/doctor/profile:
@@ -183,7 +251,7 @@ router.get('/docter/dashboard',AuthCheck,DoctorController.doctordashboard)
  *         description: Unauthorized
  */
 
-router.get('/docter/profile',AuthCheck,DoctorController.doctorprofile)
+router.get('/doctor/profile',AuthCheck,DoctorController.doctorprofile)
 /**
  * @swagger
  * /api/doctor/logout:
