@@ -261,4 +261,79 @@ router.get('/patient/dashboard', AuthCheck, PatientController.dashboard)
  */
 
 router.get('/patient/profile', AuthCheck, PatientController.profile)
+/**
+ * @swagger
+ * /api/patient/updateprofile:
+ *   post:
+ *     summary: Update Patient Profile
+ *     tags:
+ *       - Patient
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token (JWT)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileImg:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: johndoe@example.com
+ *               phone:
+ *                 type: string
+ *                 example: "+91-9876543210"
+ *               address:
+ *                 type: string
+ *                 example: "123 Main Street, New Delhi"
+ *               gender:
+ *                 type: string
+ *                 example: Male
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *                 example: "1990-01-01"
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: User not found
+ */
+
+router.post('/patient/updateprofile',AuthCheck,pateintimageupload.single('profileImg'),PatientController.updatepatient)
+/**
+ * @swagger
+ * /api/patient/logout:
+ *   post:
+ *     summary: Patient Logout
+ *     tags:
+ *       - Patient
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *       401:
+ *         description: Unauthorized
+ */
+
+router.post("/patient/logout", AuthCheck, PatientController.logout);
 module.exports = router

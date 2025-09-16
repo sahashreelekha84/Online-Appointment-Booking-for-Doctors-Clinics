@@ -93,12 +93,6 @@ router.post('/doctor/change-password',AuthCheck,DoctorController.setPassword)
  *     tags:
  *       - Doctor
  *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Doctor ID
  *       - in: header
  *         name: x-access-token
  *         required: true

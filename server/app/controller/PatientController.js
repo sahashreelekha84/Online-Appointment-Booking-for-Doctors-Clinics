@@ -299,7 +299,50 @@ class PatientController {
             })
         }
     }
+  async updatepatient(req, res) {
+        try {
+            const userId = req.user.id;
+            const existpatient = await userModel.findById(userId)
+            if (!existpatient) {
+                res.status(400).json({
+                    status: false,
+                    message: "patient not found ",
 
+                })
+            }
+            let updatedata = { ...req.body }
+            if (req.file) {
+                updatedata.profileImg = req.file.path
+            }
+
+            console.log("New image uploaded and path added:", req.file.path);
+            const updatepatient = await userModel.findByIdAndUpdate(userId, updatedata, {
+                new: true,
+            });
+            const baseUrl = `${req.protocol}://${req.get("host")}`;
+            const patientResponse = updatepatient.toObject();
+
+
+            if (patientResponse.profileImg) {
+                patientResponse.profileImg = `${baseUrl}/uploads/${patientResponse.profileImg}`;
+            }
+
+            res.status(200).json({
+                status: true,
+                message: "patient profile updated successfully",
+                data: patientResponse,
+            });
+        }
+        catch (error) {
+            res.status(500).json({
+                status: true,
+                message: error.message,
+
+            })
+        }
+
+
+    };
     async forgetpassword(req, res) {
         try {
             const { email } = req.body;
