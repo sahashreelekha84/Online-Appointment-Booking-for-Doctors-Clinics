@@ -119,6 +119,7 @@ class PatientController {
                 dob,
                 phone,
                 roleId: role._id,
+                role:role.name,
                 otp,
                 otpExpiry,
             });
@@ -163,7 +164,6 @@ class PatientController {
         }
     }
 
-
     async verifyotp(req, res) {
         try {
             const { email, otp } = req.body;
@@ -203,8 +203,6 @@ class PatientController {
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
-
-
 
     async resendotp(req, res) {
         try {

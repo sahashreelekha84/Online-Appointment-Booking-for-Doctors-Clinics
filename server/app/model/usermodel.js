@@ -44,6 +44,7 @@ const userSchema = new Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   profileImg: { type: String, default: "" },
+  role:{type:String},
   roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
   address: { type: Object, default: { line1: '', line2: '' } },
   gender: { type: String, default: "Not Selected" },
