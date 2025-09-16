@@ -442,5 +442,19 @@ class PatientController {
             })
         }
     }
+     async logout(req, res) {
+        try {
+            return res.status(200).json({
+                status: true,
+                message: "Logged out successfully. Please remove the token from client side."
+            });
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).json({
+                status: false,
+                message: error.message
+            });
+        }
+    }
 }
 module.exports = new PatientController()
