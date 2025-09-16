@@ -146,7 +146,7 @@ router.post('/doctor/updateprofile',AuthCheck,doctorimageupload.single('profileI
  *   post:
  *     summary: Forget_password
  *     tags:
- *       - Patient
+ *       - Doctor
  *     requestBody:
  *       required: true
  *       content:
@@ -175,7 +175,7 @@ router.post('/doctor/forgetpassword',DoctorController.forgetpassword)
  *   post:
  *     summary: reset_password
  *     tags:
- *       - Patient
+ *       - Doctor
  *     parameters:
  *       - in: header
  *         name: x-access-token
