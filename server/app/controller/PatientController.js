@@ -129,6 +129,7 @@ class PatientController {
             }
 
             const data = await pdata.save();
+             console.log(data);
 
 
             await transporter.sendMail({
