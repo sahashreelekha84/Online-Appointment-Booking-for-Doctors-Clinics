@@ -87,7 +87,7 @@ router.post('/doctor/login',DoctorController.login)
 router.post('/doctor/change-password',AuthCheck,DoctorController.setPassword)
 /**
  * @swagger
- * /api/updateprofile/{id}:
+ * /api/doctor/updateprofile:
  *   post:
  *     summary: Update Doctor Profile
  *     tags:
@@ -139,7 +139,7 @@ router.post('/doctor/change-password',AuthCheck,DoctorController.setPassword)
  *         description: User not found
  */
 
-router.post('/updateprofile',AuthCheck,doctorimageupload.single('profileImg'),DoctorController.updateDoctors)
+router.post('/doctor/updateprofile',AuthCheck,doctorimageupload.single('profileImg'),DoctorController.updateDoctors)
 /**
  * @swagger
  * /api/docter/dashboard:

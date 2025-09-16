@@ -130,12 +130,19 @@ class DoctorController {
             const updatedoctors = await doctorModel.findByIdAndUpdate(userId, updatedata, {
                 new: true,
             });
+            const baseUrl = `${req.protocol}://${req.get("host")}`;
+            const doctorResponse = updatedoctors.toObject();
+
+          
+            if (doctorResponse.profileImg) {
+                doctorResponse.profileImg = `${baseUrl}/uploads/${doctorResponse.profileImg}`;
+            }
+
             res.status(200).json({
                 status: true,
-                message: "Docter profile updated Successfully",
-
-                data: updatedoctors
-            })
+                message: "Doctor profile updated successfully",
+                data: doctorResponse,
+            });
         }
         catch (error) {
             res.status(500).json({
