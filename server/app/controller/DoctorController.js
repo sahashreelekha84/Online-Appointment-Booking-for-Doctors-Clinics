@@ -10,7 +10,7 @@ class DoctorController {
     async getAllDoctors(req, res) {
         try {
            //const doctors = await doctorModel.find({ role: 'Doctor' });
-             const doctors = await Role.findOne({ name: 'Doctor' });
+             const doctors = await Role.findOne({ name: 'doctor' });
             res.status(200).json({
                 status: true,
                 message: "All Docters fetched Successfully",
