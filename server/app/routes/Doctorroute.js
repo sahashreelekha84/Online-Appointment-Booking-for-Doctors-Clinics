@@ -168,7 +168,6 @@ router.post('/doctor/updateprofile',AuthCheck,doctorimageupload.single('profileI
  *       500:
  *         description: Server Error
  */
-
 router.post('/doctor/forgetpassword',DoctorController.forgetpassword)
 /**
  * @swagger

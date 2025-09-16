@@ -186,6 +186,7 @@ class DoctorController {
             })
         }
     }
+    
     async forgetpassword(req, res) {
         try {
             const { email } = req.body;
