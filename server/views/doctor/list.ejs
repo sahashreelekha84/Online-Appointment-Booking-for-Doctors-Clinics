@@ -46,83 +46,106 @@
                     <!-- Topbar -->
                     <!-- <%- include('../layout/navber.ejs')%> -->
 
-                        <!-- End of Topbar -->
+                    <!-- End of Topbar -->
 
-                        <!-- Begin Page Content -->
-                        <div class="container-fluid">
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
 
-                            <!-- Page Heading -->
-                            <h1 class="h3 mb-2 text-gray-800">Doctor / List</h1>
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-2 text-gray-800">Doctor / List</h1>
 
-                            <!-- DataTales Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <br />
-                                    <a href="/doctor/add" class="btn btn-success"> Add Doctor</a>
-                                </div>
-
-
-                                <% if(!doctors||doctors.length===0){%>
-                                    <p class="text-center text-danger mt-3">No data found</p>
-
-                                    <% }else {%>
-
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered" id="dataTable" width="100%"
-                                                    cellspacing="0">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Name</th>
-                                                            <th>Email</th>
-                                                            
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Name</th>
-                                                            <th>Email</th>
-                                                            
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </tfoot>
-                                                    <tbody>
-
-                                                        <% doctors.forEach((item,index )=> { %>
-                                                            <tr>
-                                                                <th scope="row">
-                                                                    <%= index + 1 %>
-                                                                </th>
-                                                               
-                                                                <td>
-                                                                    <%= item.name %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= item.email%>
-                                                                </td>
-                                                               
-                                                                <!-- <td><img src="/<%=item.image%>" alt="image"
-                                                                        height="100px" width="100px" /></td> -->
-                                                                <td><a href="/editcoach/<%= item._id %>"
-                                                                        class="btn btn-success">Edit</a>
-                                                                    <a href="/deletecoach/<%= item._id %>"
-                                                                        class="btn btn-danger">Delete</a></td>
-                                                                <!-- <td><a href="/delete/<%= item._id %>"
-                                                                        class="btn btn-danger">Delete</a></td> -->
-                                                            </tr>
-                                                            <% }) %>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <br />
+                                <a href="/doctor/add" class="btn btn-success"> Add Doctor</a>
                             </div>
-                            <%} %>
+
+
+                            <% if(!doctors||doctors.length===0){%>
+                                <p class="text-center text-danger mt-3">No data found</p>
+
+                                <% }else {%>
+
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>specialization</th>
+                                                        <th>Degree</th>
+                                                        <th>Experience</th>
+                                                        <th>Fees</th>
+                                                        <th>Location</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>specialization</th>
+                                                        <th>Degree</th>
+                                                        <th>Experience</th>
+                                                        <th>Fees</th>
+                                                        <th>Location</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+
+                                                    <% doctors.forEach((item,index )=> { %>
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <%= index + 1 %>
+                                                            </th>
+
+                                                            <td>
+                                                                <%= item.name %>
+                                                            </td>
+                                                            <td>
+                                                                <%= item.email%>
+                                                            </td>
+                                                            <td>
+                                                                <%= item.specialization%>
+                                                            </td>
+                                                            <td>
+                                                                <%=item.degree%>
+                                                            </td>
+                                                            <td>
+                                                                <%=item.experience%>
+                                                            </td>
+                                                            <td>
+                                                                <%=item.fees%>
+                                                            </td>
+                                                            <td>
+                                                                <%=item.location%>
+                                                            </td>
+                                                            <!-- <td><img src="/<%=item.image%>" alt="image"
+                                                                        height="100px" width="100px" /></td> -->
+                                                            <td><a href="/editcoach/<%= item._id %>"
+                                                                    class="btn btn-success">Edit</a>
+                                                                <a href="/deletecoach/<%= item._id %>"
+                                                                    class="btn btn-danger">Delete</a>
+                                                            </td>
+                                                            <!-- <td><a href="/delete/<%= item._id %>"
+                                                                        class="btn btn-danger">Delete</a></td> -->
+                                                        </tr>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                         </div>
-            <!-- <pre><%= JSON.stringify(data, null, 2) %></pre> -->
-                        <!-- /.container-fluid -->
+                        <%} %>
+                    </div>
+                    <!-- <pre><%= JSON.stringify(data, null, 2) %></pre> -->
+                    <!-- /.container-fluid -->
 
                 </div>
                 <!-- End of Main Content -->

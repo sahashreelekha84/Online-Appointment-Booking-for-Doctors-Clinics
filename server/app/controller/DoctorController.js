@@ -1,15 +1,15 @@
-const doctorModel = require("../model/doctormodel");
+const { doctorModel, passwordSchema } = require("../model/doctormodel");
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
 const Role = require("../model/role");
-const { comparepassword } = require("../middleware/AuthCheck");
+const { comparepassword, hashedpassword } = require("../middleware/AuthCheck");
 const Jwt = require('jsonwebtoken')
 class DoctorController {
 
     async getAllDoctors(req, res) {
         try {
-           const doctors = await doctorModel.find();
+            const doctors = await doctorModel.find();
             // const doctors = await Role.findOne({ name: 'doctor' });
             res.status(200).json({
                 status: true,
@@ -30,87 +30,110 @@ class DoctorController {
     };
     async login(req, res) {
         try {
-            console.log(req.body);
+            const { email, password } = req.body;
 
-            const { email, password } = req.body
-            const user = await doctorModel.findOne({ email })
-            if (!user) {
-                res.status(400).json({
-                    status: false,
-                    message: 'doctor not found',
+            const user =
 
-                })
-            }
-            const ismatch = comparepassword(password, user.password)
-            if (!ismatch) {
-                res.status(400).json({
-                    status: false,
-                    message: 'Invalid Password',
+                (await doctorModel.findOne({ email }));
 
-                })
-            }
-        
-            const token = Jwt.sign({
-                _id: user._id,
+            if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+            const isMatch = await comparepassword(password, user.password);
+            if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+            const role = await Role.findById(user.roleId);
+
+            const payload = {
                 name: user.name,
+                id: user._id,
                 email: user.email,
-                role: user.role
-            }, process.env.JWT_SECRECT_KEY, { expiresIn: "2h" })
-            return res.status(200).json({
-                status: true,
-                message: 'Doctor login successfully',
-                user: {
-                    _id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                },
-                token: token
-            })
-        }
-        catch (error) {
-            res.status(500).json({
-                status: false,
-                message: error.message,
+                roleId: user.roleId,
+                roleName: role?.name,
+                permissions: role?.permissions || [],
+                firstLogin: user.firstLogin || false,
+            };
 
-            })
+            const token = Jwt.sign(payload, process.env.JWT_SECRECT_KEY, {
+                expiresIn: user.firstLogin ? "15m" : "7d",
+            });
+
+            res.status(200).json({
+                status: true,
+                message: user.firstLogin
+                    ? "OTP verified. Please set your password"
+                    : "Login successful",
+                user: {
+                    name: user.name,
+                    _id: user._id,
+                    email: user.email,
+                    roleId: user.roleId,
+                    roleName: role?.name,
+                    permissions: role?.permissions || [],
+                },
+                token,
+                firstLogin: user.firstLogin,
+            });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
         }
     }
-     async updateDoctors(req, res) {
+
+    async setPassword(req, res) {
         try {
-            const id=req.params.id
-            const existdoctor=await doctorModel.findById(id)
-            if(!existdoctor){
-                res.status(400).json({
-                status:false,
-                message: "Docters not found ",
-                
-            }) 
-            } 
-            let updatedata={...req.body}
-            if(req.file){
-                if(existdoctor.profileImg){
-                     const oldImagePath = path.join(__dirname, '..', '..', existingDesigner.image);
-                     console.log('__dirname',__dirname);
-                     
-                    fs.unlink(oldImagePath, (err) => {
-                        if (err) {
-                            console.error("Error deleting old image:", err);
-                        } else {
-                            console.log("Old image deleted successfully.");
-                        }
-                    });
-                }
+            const { password } = req.body;
+            const userId = req.user.id;
+
+
+            const { error } = passwordSchema.validate({ password });
+            if (error) {
+                return res.status(400).json({
+                    status: false,
+                    message: error.details[0].message,
+                });
             }
-            updatedata.profileImg=req.file.path
+
+            let user = await doctorModel.findById(userId);
+
+            if (!user) return res.status(404).json({ message: "User not found" });
+            if (!user.firstLogin)
+                return res.status(400).json({ message: "Password already set" });
+
+            user.password = await hashedpassword(password);
+            user.firstLogin = false;
+            await user.save();
+
+            res.json({
+                status: true,
+                message: "Password set successfully. You can now log in.",
+            });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+    async updateDoctors(req, res) {
+        try {
+            const userId = req.user.id;
+            const existdoctor = await doctorModel.findById(userId)
+            if (!existdoctor) {
+                res.status(400).json({
+                    status: false,
+                    message: "Docters not found ",
+
+                })
+            }
+            let updatedata = { ...req.body }
+            if (req.file) {
+                updatedata.profileImg = req.file.path
+            }
+
             console.log("New image uploaded and path added:", req.file.path);
-            const updatedoctors = await doctorModel.findByIdAndUpdate(id, updatedata, {
+            const updatedoctors = await doctorModel.findByIdAndUpdate(userId, updatedata, {
                 new: true,
             });
             res.status(200).json({
                 status: true,
-                message: " Docter profile updated Successfully",
-                
+                message: "Docter profile updated Successfully",
+
                 data: updatedoctors
             })
         }
@@ -124,35 +147,50 @@ class DoctorController {
 
 
     };
-     async doctordashboard(req,res){
-        try{
-        res.status(200).json({
-            status:true,
-            message:'Welcome to Doctor dashboard ',
-            data:req.user
-        })
+    async doctordashboard(req, res) {
+        try {
+            res.status(200).json({
+                status: true,
+                message: 'Welcome to Doctor dashboard ',
+                data: req.user
+            })
         }
-        catch(error){
+        catch (error) {
             res.status(500).json({
-                status:false,
-                message:error.message
+                status: false,
+                message: error.message
             })
         }
     }
-    async doctorprofile(req,res){
-        try{
-        res.status(200).json({
-            status:true,
-            message:'Doctor profile Fetched Successfully',
-            data:req.user
-        })
+    async doctorprofile(req, res) {
+        try {
+            res.status(200).json({
+                status: true,
+                message: 'Doctor profile Fetched Successfully',
+                data: req.user
+            })
         }
-        catch(error){
+        catch (error) {
             res.status(500).json({
-                status:false,
-                message:error.message
+                status: false,
+                message: error.message
             })
         }
     }
+    async logout(req, res) {
+        try {
+            return res.status(200).json({
+                status: true,
+                message: "Logged out successfully. Please remove the token from client side."
+            });
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).json({
+                status: false,
+                message: error.message
+            });
+        }
+    }
+
 }
 module.exports = new DoctorController()
