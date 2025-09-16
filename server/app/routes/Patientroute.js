@@ -334,6 +334,5 @@ router.post('/patient/updateprofile',AuthCheck,pateintimageupload.single('profil
  *       401:
  *         description: Unauthorized
  */
-
 router.post("/patient/logout", AuthCheck, PatientController.logout);
 module.exports = router
