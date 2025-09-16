@@ -312,7 +312,6 @@ router.get('/patient/profile', AuthCheck, PatientController.profile)
  *       404:
  *         description: User not found
  */
-
 router.post('/patient/updateprofile',AuthCheck,pateintimageupload.single('profileImg'),PatientController.updatepatient)
 /**
  * @swagger
