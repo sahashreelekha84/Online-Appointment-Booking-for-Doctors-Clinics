@@ -39,7 +39,7 @@ const createRoles = async () => {
     }
   }
 
-  console.log("All roles seeded successfully!");
+  //console.log("All roles seeded successfully!");
 };
 
 module.exports = createRoles;

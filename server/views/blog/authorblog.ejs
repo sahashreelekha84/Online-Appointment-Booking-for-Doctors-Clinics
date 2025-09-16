@@ -1,0 +1,28 @@
+<%- include('../layout/sideber.ejs') %>
+<%- include('../layout/navber.ejs') %>
+
+<div class="container-fluid">
+  <h1 class="h3 mb-2 text-gray-800">Author's Blogs</h1>
+  
+  <div class="row">
+    <% if (blogs.length === 0) { %>
+      <p>No blogs found for this author.</p>
+    <% } else { %>
+      <% blogs.forEach(blog => { %>
+        <div class="col-md-6 mb-3">
+          <div class="card shadow">
+            <img src="/<%= blog.image %>" class="card-img-top" alt="<%= blog.title %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= blog.title %></h5>
+              <p class="card-text"><%= blog.description %></p>
+              <p class="text-muted">Author: <%= blog.authorId.name %></p>
+              <a href="/singleblog/<%= blog._id %>" class="btn btn-primary">View</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../layout/footer.ejs') %>

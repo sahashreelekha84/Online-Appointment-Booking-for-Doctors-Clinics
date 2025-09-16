@@ -21,6 +21,7 @@ const router=express.Router()
  *        description: data fetched successfully.
  */
 router.get('/alldoctor',DoctorController.getAllDoctors)
+
 router.post('/updateprofile/:id',doctorimageupload.single('profileImg'),DoctorController.updateDoctors)
 router.get('/docterdashboard',AuthCheck,DoctorController.doctordashboard)
 router.get('/docterprofile',AuthCheck,DoctorController.doctorprofile)

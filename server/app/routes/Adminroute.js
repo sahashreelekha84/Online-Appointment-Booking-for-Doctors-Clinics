@@ -3,6 +3,7 @@ const doctorimageupload = require('../helper/doctorimageupload')
 const AdminController = require('../controller/AdminController')
 const { isAdmin, AuthCheck } = require('../middleware/AuthCheck')
 const router=express.Router()
-router.post('/create/doctor',doctorimageupload.single('profileImg'),AuthCheck,isAdmin,AdminController.adddoctor)
+
+router.post('/create/doctor',doctorimageupload.single('profileImg'),AuthCheck,isAdmin,AdminController.addDoctor)
 router.delete('/delete/doctor',AuthCheck,isAdmin,AdminController.deletedoctor)
 module.exports=router

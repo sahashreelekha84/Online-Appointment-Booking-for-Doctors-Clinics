@@ -2,11 +2,15 @@ const doctorModel = require("../model/doctormodel");
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
+const Role = require("../model/role");
+const { comparepassword } = require("../middleware/AuthCheck");
+const Jwt = require('jsonwebtoken')
 class DoctorController {
 
     async getAllDoctors(req, res) {
         try {
-            const doctors = await doctorModel.find({ role: 'Doctor' });
+           //const doctors = await doctorModel.find({ role: 'Doctor' });
+             const doctors = await Role.findOne({ name: 'Doctor' });
             res.status(200).json({
                 status: true,
                 message: "All Docters fetched Successfully",
@@ -24,6 +28,54 @@ class DoctorController {
 
 
     };
+    async login(req, res) {
+        try {
+            console.log(req.body);
+
+            const { email, password } = req.body
+            const user = await doctorModel.findOne({ email })
+            if (!user) {
+                res.status(400).json({
+                    status: false,
+                    message: 'doctor not found',
+
+                })
+            }
+            const ismatch = comparepassword(password, user.password)
+            if (!ismatch) {
+                res.status(400).json({
+                    status: false,
+                    message: 'Invalid Password',
+
+                })
+            }
+        
+            const token = Jwt.sign({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }, process.env.JWT_SECRECT_KEY, { expiresIn: "2h" })
+            return res.status(200).json({
+                status: true,
+                message: 'Doctor login successfully',
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                },
+                token: token
+            })
+        }
+        catch (error) {
+            res.status(500).json({
+                status: false,
+                message: error.message,
+
+            })
+        }
+    }
      async updateDoctors(req, res) {
         try {
             const id=req.params.id

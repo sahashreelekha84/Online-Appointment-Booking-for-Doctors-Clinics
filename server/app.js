@@ -7,11 +7,25 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const SwaggerOptions = require('./swagger.json');
 const swaggerDocument = swaggerJsDoc(SwaggerOptions);
-console.log(swaggerDocument);
+// console.log(swaggerDocument);
+var cookieParser = require('cookie-parser')
+const flash=require('connect-flash')
+const session=require('express-session')
 const app=express()
 dbcon()
+app.use(session({
+  secret: 'helloworld',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge:60000 }
+}))
+app.use(flash())
+app.use(cookieParser())
+app.set('view engine','ejs')
+app.set('views','views')
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -19,6 +33,10 @@ app.use(cors({
 }));
 app.use(express.static(path.join(__dirname,'/public')))
 app.use('/uploads',express.static(path.join(__dirname,'uploads')))
+const authejs=require('./app/routes/admin/authejs')
+app.use(authejs)
+const patientejs=require('./app/routes/admin/patientejsroute')
+app.use(patientejs)
 const doctorroute=require('./app/routes/Doctorroute')
 app.use('/api',doctorroute)
 
