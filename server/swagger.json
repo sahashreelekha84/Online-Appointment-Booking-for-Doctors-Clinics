@@ -48,6 +48,10 @@
          {
         "name": "Blog",
         "description": "Blog Details API"
+      },
+      {
+         "name": "Comment",
+        "description": "Comment Details API"
       }
     ],
     "schemes": [
