@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Error</title>
+
+  <!-- Custom fonts -->
+  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <%- include('../layout/sideber.ejs') %>
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+      
+
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+          <div class="card shadow border-left-danger w-75">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-danger">Oops! Something went wrong</h6>
+            </div>
+            <div class="card-body text-center">
+              <!-- Main error message -->
+              <p class="text-danger h5"><strong><%= message %></strong></p>
+
+              <!-- Optional error details -->
+              <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger mt-3">
+                  <pre><%= error %></pre>
+                </div>
+              <% } %>
+
+              <!-- Back button -->
+              <a href="javascript:history.back()" class="btn btn-primary mt-4">
+                <i class="fas fa-arrow-left"></i> Go Back
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <%- include('../layout/footer.ejs') %>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scroll to Top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="/js/sb-admin-2.min.js"></script>
+
+</body>
+</html>

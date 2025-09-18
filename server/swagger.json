@@ -25,12 +25,9 @@
       }
     ],
     "servers": [
-
-    
       {
         "url": "https://online-appointment-booking-for-doctors.onrender.com"
-      } ,
-      
+      },
       {
         "url": "http://localhost:3005"
       }
@@ -43,6 +40,10 @@
       {
         "name": "Doctor",
         "description": "Doctor Details API"
+      },
+      {
+        "name": "Appointment",
+        "description": "Appointment Details API"
       }
     ],
     "schemes": [

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>System Settings</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <%- include('../layout/sideber.ejs') %>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <%- include('../layout/navber.ejs') %>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">System Settings</h1>
+          <p class="mb-4">Configure global booking rules, limits, and holidays.</p>
+
+          <!-- Settings Card -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-cogs"></i> System-Wide Booking Rules
+              </h6>
+            </div>
+            <div class="card-body">
+              <form method="POST" action="/admin/settings">
+
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Setting</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Max Booking Per Slot</td>
+                        <td>
+                          <input type="number" class="form-control"
+                            name="maxBookingPerSlot"
+                            value="<%= settings.maxBookingPerSlot %>" required>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Max Booking Per Hour</td>
+                        <td>
+                          <input type="number" class="form-control"
+                            name="maxBookingPerHour"
+                            value="<%= settings.maxBookingPerHour %>" required>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Max Daily Appointments</td>
+                        <td>
+                          <input type="number" class="form-control"
+                            name="maxDailyAppointments"
+                            value="<%= settings.maxDailyAppointments %>" required>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Holidays</td>
+                        <td>
+                          <!-- Holiday Picker -->
+                          <div class="input-group mb-2">
+                            <input type="date" class="form-control" id="holidayInput">
+                            <div class="input-group-append">
+                              <button type="button" id="addHolidayBtn" class="btn btn-secondary">
+                                <i class="fas fa-plus"></i> Add
+                              </button>
+                            </div>
+                          </div>
+
+                          <!-- Holiday Table -->
+                          <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Date</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody id="holidayTableBody">
+                                <% if (settings.holidays && settings.holidays.length > 0) { %>
+                                  <% settings.holidays.forEach((day, index) => { %>
+                                    <tr>
+                                      <td><%= index + 1 %></td>
+                                      <td><%= day %></td>
+                                      <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove-holiday">
+                                          <i class="fas fa-trash"></i>
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  <% }) %>
+                                <% } else { %>
+                                  <tr id="noHolidayRow">
+                                    <td colspan="3" class="text-center text-muted">No holidays added</td>
+                                  </tr>
+                                <% } %>
+                              </tbody>
+                            </table>
+                          </div>
+
+                          <!-- Hidden field for submission -->
+                          <input type="hidden" id="holidays" name="holidays"
+                            value="<%= settings.holidays ? settings.holidays.join(',') : '' %>">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Save Settings
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <%- include('../layout/footer.ejs') %>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="/js/sb-admin-2.min.js"></script>
+
+  <!-- Custom Holiday Script -->
+  <script>
+    const addBtn = document.getElementById("addHolidayBtn");
+    const holidayInput = document.getElementById("holidayInput");
+    const holidayTableBody = document.getElementById("holidayTableBody");
+    const holidaysField = document.getElementById("holidays");
+
+    function updateHiddenField() {
+      const dates = Array.from(holidayTableBody.querySelectorAll("tr td:nth-child(2)"))
+        .map(td => td.textContent.trim());
+      holidaysField.value = dates.join(",");
+    }
+
+    addBtn.addEventListener("click", () => {
+      const date = holidayInput.value;
+      if (!date) return;
+
+      if (document.getElementById("noHolidayRow")) {
+        document.getElementById("noHolidayRow").remove();
+      }
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${holidayTableBody.rows.length + 1}</td>
+        <td>${date}</td>
+        <td><button type="button" class="btn btn-danger btn-sm remove-holiday"><i class="fas fa-trash"></i></button></td>
+      `;
+      holidayTableBody.appendChild(row);
+
+      updateHiddenField();
+      holidayInput.value = "";
+    });
+
+    holidayTableBody.addEventListener("click", (e) => {
+      if (e.target.closest(".remove-holiday")) {
+        e.target.closest("tr").remove();
+        updateHiddenField();
+
+        if (holidayTableBody.rows.length === 0) {
+          holidayTableBody.innerHTML = `<tr id="noHolidayRow"><td colspan="3" class="text-center text-muted">No holidays added</td></tr>`;
+        }
+      }
+    });
+
+    updateHiddenField();
+  </script>
+
+</body>
+</html>

@@ -37,12 +37,17 @@ const authejs=require('./app/routes/admin/authejs')
 app.use(authejs)
 const patientejs=require('./app/routes/admin/patientejsroute')
 app.use(patientejs)
+const avalibiltyejs=require('./app/routes/admin/avalibilityejsroute')
+app.use(avalibiltyejs)
+const settingejs=require('./app/routes/admin/settingroute')
+app.use(settingejs)
 const doctorroute=require('./app/routes/Doctorroute')
 app.use('/api',doctorroute)
 
 const patientroute=require('./app/routes/Patientroute')
 app.use('/api',patientroute)
-
+const bookingroute=require('./app/routes/api/bookingapiroute')
+app.use('/api',bookingroute)
 const Adminroute=require('./app/routes/Adminroute')
 app.use('/api/admin',Adminroute)
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  <h2>Add Special Day Off</h2>
+  <form method="POST" action="/doctor/<%= doctorId %>/specialdayoff">
+    <label>Date:</label>
+    <input type="date" name="date" required /><br>
+    <button type="submit">Add Special Day Off</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Create Availability</title>
+
+  <!-- Custom fonts -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <%- include('../layout/sideber.ejs') %>
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+
+        <!-- Topbar -->
+        <!-- <%- include('../layout/navber.ejs') %> -->
+        <!-- End Topbar -->
+
+        <div class="container-fluid">
+
+          <h1 class="h3 mb-2 text-gray-800">Doctor Availability / Create</h1>
+
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h4>Create Availability</h4>
+            </div>
+
+            <div class="card-body">
+              <form action="/availability/createpost" method="POST">
+
+                <div class="form-group">
+                  <label>Select Doctor:</label>
+                  <select name="doctorId" class="form-control" required>
+                    <% doctors.forEach(doc => { %>
+                      <option value="<%= doc._id %>"><%= doc.name %> (<%= doc.email %>)</option>
+                    <% }) %>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Weekday:</label>
+                  <input type="text" class="form-control" name="weekday" placeholder="e.g., Monday" required>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label>Start Hour:</label>
+                    <input type="number" class="form-control" name="startHour" min="0" max="23" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label>Start Minute:</label>
+                    <input type="number" class="form-control" name="startMinute" min="0" max="59" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label>End Hour:</label>
+                    <input type="number" class="form-control" name="endHour" min="0" max="23" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label>End Minute:</label>
+                    <input type="number" class="form-control" name="endMinute" min="0" max="59" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Duration (minutes):</label>
+                  <input type="number" class="form-control" name="duration" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Availability</button>
+
+              </form>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <%- include('../layout/footer.ejs') %>
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="/js/sb-admin-2.min.js"></script>
+
+</body>
+</html>

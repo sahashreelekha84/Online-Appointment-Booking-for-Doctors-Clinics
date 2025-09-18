@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  <h2>Set Day Off</h2>
+  <form method="POST" action="/availability/<%= doctorId %>/dayoff">
+    <label>Weekday:</label>
+    <input type="text" name="weekday" placeholder="Monday" required /><br>
+
+    <label>Day Off?</label>
+    <select name="isDayOff">
+      <option value="true">Yes</option>
+      <option value="false">No</option>
+    </select><br>
+
+    <button type="submit">Set Day Off</button>
+  </form>
+</body>
+</html>

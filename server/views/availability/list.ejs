@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title><%= title %></title>
+
+  <!-- Fonts & Styles -->
+  <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+  <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+    <%- include('../layout/sideber.ejs') %>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <%- include('../layout/navber.ejs') %>
+
+        <div class="container-fluid">
+          <h1 class="h3 mb-2 text-gray-800">Doctor Availability / List</h1>
+
+          <% if (message) { %>
+            <div class="alert alert-success"><%= message %></div>
+          <% } %>
+
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+              <h4>All Doctors Availability</h4>
+              <a href="/availability/create" class="btn btn-success">Add Availability</a>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Doctor Name</th>
+                      <th>Specialization</th>
+                      <th>Weekday</th>
+                      <th>Day Off</th>
+                      <th>Time Slots</th>
+                      <th>Special Day Offs</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% availability.forEach(slot => { %>
+                      <tr>
+                        <td><%= slot.doctorId.name %></td>
+                        <td><%=slot.doctorId.specialization %></td>
+                        <td><%= slot.weekday %></td>
+                        <td><%= slot.isDayOff ? "Yes" : "No" %></td>
+                        <td>
+                          <% slot.timeSlots.forEach(ts => { %>
+                            <span class="badge badge-primary"><%= ts %></span>
+                          <% }) %>
+                        </td>
+                        <td>
+                          <% if (slot.specialDayOffs.length > 0) { %>
+                            <% slot.specialDayOffs.forEach((day, idx) => { %>
+                              <span class="badge badge-info">
+                                <%= day %>
+                                <button class="btn btn-sm btn-danger" data-toggle="modal"
+                                  data-target="#deleteSpecialModal<%= slot._id %>-<%= idx %>">&times;</button>
+                              </span>
+
+                              <!-- Delete Special Day Off Modal -->
+                              <div class="modal fade" id="deleteSpecialModal<%= slot._id %>-<%= idx %>" tabindex="-1">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <form action="/doctor/<%= slot.doctorId._id %>/specialdayoff/delete" method="POST">
+                                      <input type="hidden" name="weekday" value="<%= slot.weekday %>">
+                                      <input type="hidden" name="specialDay" value="<%= day %>">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Delete Special Day Off - <%= day %></h5>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                      </div>
+                                      <div class="modal-body">Are you sure you want to delete this special day off?</div>
+                                      <div class="modal-footer">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            <% }) %>
+                          <% } else { %>
+                            None
+                          <% } %>
+                        </td>
+                        <td>
+                          <!-- Edit Day Off -->
+                          <button class="btn btn-warning btn-sm" data-toggle="modal"
+                            data-target="#editDayOffModal<%= slot._id %>">Edit Day Off</button>
+
+                          <!-- Add Special Day Off -->
+                          <button class="btn btn-info btn-sm" data-toggle="modal"
+                            data-target="#addSpecialModal<%= slot._id %>">Add Special Day Off</button>
+
+                          <!-- Delete Entire Slot -->
+                          <button class="btn btn-danger btn-sm" data-toggle="modal"
+                            data-target="#deleteSlotModal<%= slot._id %>">Delete Slot</button>
+                        </td>
+                      </tr>
+
+                      <!-- Edit Day Off Modal -->
+                      <div class="modal fade" id="editDayOffModal<%= slot._id %>" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <form action="/doctor/<%= slot.doctorId._id %>/dayoff" method="POST">
+                              <input type="hidden" name="weekday" value="<%= slot.weekday %>">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Edit Day Off - <%= slot.weekday %></h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              </div>
+                              <div class="modal-body">
+                                <label>Is Day Off?</label>
+                                <select name="isDayOff" class="form-control">
+                                  <option value="true" <%= slot.isDayOff ? "selected" : "" %>>Yes</option>
+                                  <option value="false" <%= !slot.isDayOff ? "selected" : "" %>>No</option>
+                                </select>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Add Special Day Off Modal -->
+                      <div class="modal fade" id="addSpecialModal<%= slot._id %>" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <form action="/doctor/<%= slot.doctorId._id %>/specialdayoff" method="POST">
+                              <input type="hidden" name="weekday" value="<%= slot.weekday %>">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Add Special Day Off - <%= slot.weekday %></h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              </div>
+                              <div class="modal-body">
+                                <input type="date" name="specialDay" class="form-control" required>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Delete Entire Slot Modal -->
+                      <div class="modal fade" id="deleteSlotModal<%= slot._id %>" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <form action="/doctor/<%= slot.doctorId._id %>/specialdayoff/delete" method="POST">
+                              <input type="hidden" name="weekday" value="<%= slot.weekday %>">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Delete Availability Slot - <%= slot.weekday %></h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              </div>
+                              <div class="modal-body">Are you sure you want to delete this availability slot?</div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <%- include('../layout/footer.ejs') %>
+    </div>
+  </div>
+
+  <!-- Scroll to Top -->
+  <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+
+  <!-- Scripts -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="/js/sb-admin-2.min.js"></script>
+  <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#dataTable').DataTable();
+    });
+  </script>
+</body>
+</html>

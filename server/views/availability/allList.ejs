@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  <h2>All Doctors Availability</h2>
+
+  <% if (availability.length === 0) { %>
+    <p>No availability set for any doctor.</p>
+    <a href="/availability/create">Create Availability</a>
+  <% } else { %>
+    <table border="1" cellpadding="8">
+      <thead>
+        <tr>
+          <th>Doctor</th>
+          <th>Weekday</th>
+          <th>Time Slots</th>
+          <th>Day Off?</th>
+          <th>Special Day Offs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% availability.forEach(a => { %>
+          <tr>
+            <td>
+              <% if (a.doctorId) { %>
+                <%= a.doctorId.name %> (<%= a.doctorId.email %>)
+              <% } else { %>
+                Unknown Doctor
+              <% } %>
+            </td>
+            <td><%= a.weekday %></td>
+            <td><%= a.timeSlots.join(", ") %></td>
+            <td><%= a.isDayOff ? "Yes" : "No" %></td>
+            <td>
+              <% if (a.specialDayOffs && a.specialDayOffs.length > 0) { %>
+                <%= a.specialDayOffs.join(", ") %>
+              <% } else { %>
+                None
+              <% } %>
+            </td>
+            <td>
+              <a href="/availability/<%= a.doctorId._id %>">View</a> | 
+              <a href="/availability/<%= a.doctorId._id %>/dayoff">Set Day Off</a> | 
+              <a href="/availability/<%= a.doctorId._id %>/special-dayoff">Add Special Day Off</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <br>
+  <a href="/availability/create">Create New Availability</a>
+</body>
+</html>
