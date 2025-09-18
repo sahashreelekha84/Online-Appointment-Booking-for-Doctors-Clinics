@@ -9,7 +9,8 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  * /api/create/blog:
  *   post:
  *     summary: Create a new blog
- *     tags: [Blog]
+ *     tags:
+ *       - Blog
  *     parameters:
  *       - in: header
  *         name: x-access-token
@@ -23,6 +24,10 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - image
  *             properties:
  *               title:
  *                 type: string
@@ -36,8 +41,12 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *     responses:
  *       201:
  *         description: Blog created successfully
+ *       400:
+ *         description: Bad Request
  *       401:
  *         description: Unauthorized
+ *       500:
+ *         description: Internal Server Error
  */
 router.post(
   '/create/blog',

@@ -36,7 +36,7 @@ class BlogController {
     async allblog(req, res) {
         try {
             const blogs = await BlogModel.find({is_deleted: false })
-                .populate({ path: "authorId", select: "name email" })
+                .populate({ path: "doctorId", select: "name email" })
                 .sort({ createdAt: -1 });
 
             res.render("blog/list", { blogs, data: req.user });
@@ -82,7 +82,7 @@ class BlogController {
             if (!mongoose.Types.ObjectId.isValid(id)) return res.redirect("/blog/list");
 
             const blog = await BlogModel.findById(id)
-                .populate({ path: "authorId", select: "name email" });
+                .populate({ path: "doctorId", select: "name email" });
 
             if (!blog) return res.redirect("/blog/list");
 
@@ -163,11 +163,11 @@ class BlogController {
     // Fetch blogs for a single author
     async authorBlogs(req, res) {
         try {
-            const authorId = req.params.authorId;
-            if (!mongoose.Types.ObjectId.isValid(authorId)) return res.redirect("/blog/list");
+            const doctorId = req.params.doctorId;
+            if (!mongoose.Types.ObjectId.isValid(doctorId)) return res.redirect("/blog/list");
 
-            const blogs = await BlogModel.find({ authorId, is_deleted: false })
-                .populate({ path: "authorId", select: "name email" })
+            const blogs = await BlogModel.find({ doctorId, is_deleted: false })
+                .populate({ path: "doctorId", select: "name email" })
                 .sort({ createdAt: -1 });
 
             res.render("blog/list", { blogs, data: req.user });
