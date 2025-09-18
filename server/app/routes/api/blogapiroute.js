@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const BlogController = require('../../controller/api/BlogController');
 const Blogimageupload = require('../../helper/Blogimageupload');
-const { Authcheck} = require('../../middleware/AuthCheck'); // middleware for authentication & role check
+const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for authentication & role check
 
 /**
  * @swagger
@@ -41,7 +41,7 @@ const { Authcheck} = require('../../middleware/AuthCheck'); // middleware for au
  */
 router.post(
   '/create/blog',
-  Authcheck, // ensure user is logged in
+  AuthCheck, // ensure user is logged in
   Blogimageupload.single("image"), // handle image upload
   BlogController.createBlog
 );
@@ -67,7 +67,7 @@ router.post(
  */
 router.get(
   '/blog/list',
-  Authcheck,
+  AuthCheck,
    // only admin can access
   BlogController.getAllBlogs
 );
@@ -108,7 +108,7 @@ router.get(
  */
 router.post(
   '/blog/:id/comment',
-  Authcheck,
+  AuthCheck,
    // only admin can access
   BlogController.commentcreate
 );
@@ -139,7 +139,7 @@ router.post(
  */
 router.get(
   '/blog/:id/comments',
-  Authcheck,
+  AuthCheck,
    // only admin can access
   BlogController.commentlist
 );
@@ -170,7 +170,7 @@ router.get(
  */
 router.get(
   '/blog/:id',
-  Authcheck,
+  AuthCheck,
   BlogController.getBlogById
 );
 
@@ -219,7 +219,7 @@ router.get(
  */
 router.post(
   '/updateblog/:id',
-  Authcheck,
+  AuthCheck,
   Blogimageupload.single("image"),
   BlogController.updateBlog
 );
@@ -251,7 +251,7 @@ router.post(
  */
 router.delete(
   '/deleteblog/:id',
-  Authcheck,
+  AuthCheck,
   BlogController.deleteBlog
 );
 
