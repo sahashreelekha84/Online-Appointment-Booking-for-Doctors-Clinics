@@ -267,4 +267,34 @@ router.get('/doctor/profile',AuthCheck,DoctorController.doctorprofile)
  */
 
 router.post("/doctor/logout", AuthCheck, DoctorController.logout);
+/**
+ * @swagger
+ * /api/doctor/getAllDoctorsbyspecilization:
+ *   post:
+ *     summary: Get doctors by specialization and location
+ *     tags:
+ *       - Doctor
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               specialization:
+ *                 type: string
+ *                 example: Cardiologist
+ *               location:
+ *                 type: string
+ *                 example: New York
+ *     responses:
+ *       200:
+ *         description: All specialized doctors fetched successfully
+ *       404:
+ *         description: No doctors found with the given specialization and location
+ *       500:
+ *         description: Internal server error
+ */
+
+router.post("/doctor/specilization",AuthCheck,DoctorController.getAllDoctorsbyspecilization)
 module.exports=router

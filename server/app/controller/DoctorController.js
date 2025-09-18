@@ -30,6 +30,34 @@ class DoctorController {
 
 
     };
+   async getAllDoctorsbyspecilization(req, res) {
+    try {
+        const { specialization, location } = req.body;
+
+        // Find doctors by both specialization and location
+        const doctors = await doctorModel.find({ specialization, location });
+
+        if (!doctors || doctors.length === 0) {
+            return res.status(404).json({
+                status: false,
+                message: "No doctors found with the given specialization and location",
+            });
+        }
+
+        res.status(200).json({
+            status: true,
+            message: "All specialized doctors fetched successfully",
+            total: doctors.length,
+            data: doctors,
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: error.message,
+        });
+    }
+};
+
     async login(req, res) {
         try {
             const { email, password } = req.body;
