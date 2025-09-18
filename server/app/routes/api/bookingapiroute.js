@@ -47,7 +47,6 @@ const appointmentController = require("../../controller/api/bookingApiController
  *         description: Unauthorized
  */
 router.post("/appointment/create/book", AuthCheck, appointmentController.bookAppointment);
-
 /**
  * @swagger
  * /api/appointment/patient/mypatient:
@@ -69,7 +68,6 @@ router.post("/appointment/create/book", AuthCheck, appointmentController.bookApp
  *         description: Unauthorized
  */
 router.get("/appointment/patient/mypatient", AuthCheck, appointmentController.getMyAppointments);
-
 /**
  * @swagger
  * /api/appointment/doctor/mydoctor:
