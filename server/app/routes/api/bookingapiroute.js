@@ -45,7 +45,7 @@ const appointmentController = require("../../controller/api/bookingApiController
  *       401:
  *         description: Unauthorized
  */
-router.post("/appointment/create/book", AuthCheck, appointmentController.bookAppointment);
+router.post("/create/book", AuthCheck, appointmentController.bookAppointment);
 /**
  * @swagger
  * /api/appointment/patient/mypatient:
@@ -66,7 +66,7 @@ router.post("/appointment/create/book", AuthCheck, appointmentController.bookApp
  *       401:
  *         description: Unauthorized
  */
-router.get("/appointment/patient/mypatient", AuthCheck, appointmentController.getMyAppointments);
+router.get("/patient/mypatient", AuthCheck, appointmentController.getMyAppointments);
 /**
  * @swagger
  * /api/appointment/doctor/mydoctor:
@@ -87,6 +87,6 @@ router.get("/appointment/patient/mypatient", AuthCheck, appointmentController.ge
  *       401:
  *         description: Unauthorized
  */
-router.get("/appointment/doctor/mydoctor", AuthCheck, appointmentController.getDoctorAppointments);
+router.get("/doctor/mydoctor", AuthCheck, appointmentController.getDoctorAppointments);
 
 module.exports = router;

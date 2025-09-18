@@ -47,7 +47,7 @@ app.use('/api',doctorroute)
 const patientroute=require('./app/routes/Patientroute')
 app.use('/api',patientroute)
 const bookingroute=require('./app/routes/api/bookingapiroute')
-app.use('/api',bookingroute)
+app.use('/api/appointment',bookingroute)
 const Adminroute=require('./app/routes/Adminroute')
 app.use('/api/admin',Adminroute)
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
