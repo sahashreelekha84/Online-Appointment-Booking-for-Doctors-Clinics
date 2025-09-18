@@ -69,6 +69,86 @@ router.post("/create/book", AuthCheck, appointmentController.bookAppointment);
 router.get("/patient/mypatient", AuthCheck, appointmentController.getMyAppointments);
 /**
  * @swagger
+ * /api/appointment/patient/reschedule/{id}:
+ *   put:
+ *     summary: Reschedule an appointment (Patient only)
+ *     tags: [Appointment]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Appointment ID
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Authentication token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 example: 2025-09-25
+ *               timeSlot:
+ *                 type: string
+ *                 example: "10:00 AM - 10:30 AM"
+ *     responses:
+ *       200:
+ *         description: Appointment rescheduled
+ *       400:
+ *         description: Invalid input or doctor unavailable
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/patient/reschedule/:id", AuthCheck, appointmentController.rescheduleAppointment);
+/**
+ * @swagger
+ * /api/appointment/patient/cancel/{id}:
+ *   put:
+ *     summary: Cancel an appointment (Patient only)
+ *     tags: [Appointment]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Appointment ID
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Authentication token
+ *     responses:
+ *       200:
+ *         description: Appointment cancelled
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/patient/cancel/:id", AuthCheck, appointmentController.cancelAppointment);
+/**
+ * @swagger
  * /api/appointment/doctor/mydoctor:
  *   get:
  *     summary: Get appointments assigned to logged-in doctor
