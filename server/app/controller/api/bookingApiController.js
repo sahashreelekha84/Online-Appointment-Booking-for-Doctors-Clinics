@@ -329,7 +329,7 @@ async completeAppointment(req, res) {
     const appointment = await Appointment.findById(req.params.id);
     if (!appointment) return res.status(404).json({ message: "Appointment not found" });
 
-    if (appointment.doctorId!== req.user._id)
+    if (appointment.doctorId!== req.user.id)
       return res.status(403).json({ message: "Not authorized" });
 
     // Mark appointment as completed
