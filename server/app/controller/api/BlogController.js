@@ -5,40 +5,44 @@ const fsPromises = require("fs").promises;
 
 class BlogController {
   // Create a new blog
-  async createBlog(req, res) {
-    try {
-      const { title, description, is_deleted } = req.body;
-      const doctorId = req.user.id;
-      if (req.user.roleName !== "doctor") {
-        return res.status(403).json({ message: "Only doctors can post the blog" });
-      }
-      if (!title) {
-        return res.status(400).json({ message: "Title is required" });
-      }
+async createBlog(req, res) {
+  try {
+    const { title, description, is_deleted } = req.body;
+    const doctorId = req.user.id;
 
-      const blog = new BlogModel({
-        title,
-        description,
-        doctorId,
-        is_deleted: is_deleted || false,
-      });
-
-      if (req.file) {
-        blog.image = req.file.path;
-      }
-
-      await blog.save();
-      console.log(blog);
-
-      res.status(201).json({
-        message: "Blog created successfully",
-        blog,
-      });
-    } catch (error) {
-      console.error("Create blog error:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
+    if (req.user.roleName !== "doctor") {
+      return res.status(403).json({ message: "Only doctors can post the blog" });
     }
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    const blog = new BlogModel({
+      title,
+      description,
+      doctorId,
+      is_deleted: is_deleted || false,
+    });
+
+    if (req.file) {
+      // Build full URL using filename
+      const baseUrl = req.protocol + "://" + req.get("host");
+      blog.image = `${baseUrl}/uploads/blog/${req.file.filename}`;
+    }
+
+    await blog.save();
+    console.log(blog);
+
+    res.status(201).json({
+      message: "Blog created successfully",
+      blog,
+    });
+  } catch (error) {
+    console.error("Create blog error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
+}
+
 
   // Get all blogs (non-deleted)
   async getAllBlogs(req, res) {
