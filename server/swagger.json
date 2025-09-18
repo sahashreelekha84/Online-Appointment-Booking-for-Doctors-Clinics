@@ -1,29 +1,38 @@
 {
-  "definition": {
+  "swaggerDefinition": {
     "openapi": "3.0.0",
     "info": {
       "title": "Online-Appointment-Booking-for-Doctors-Clinics",
       "version": "1.0.0",
-      "description": "Online-Appointment-Booking-for-Doctors-Clinics by Webskitters",
+      "description": "Online-Appointment-Booking-for-Doctors-Clinics by webskitters",
       "contact": {
         "name": "Shreelekha"
       }
     },
+    "components": {
+      "securitySchemes": {
+        "Token": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "x-access-token",
+          "description": "Custom token for API authentication"
+        }
+      }
+    },
+    "security": [
+      {
+        "Token": []
+      }
+    ],
     "servers": [
       {
-        "url": "https://online-appointment-booking-for-doctors.onrender.com",
-        "description": "Production server"
+        "url": "https://online-appointment-booking-for-doctors.onrender.com"
       },
       {
-        "url": "http://localhost:3005",
-        "description": "Local development server"
+        "url": "http://localhost:3005"
       }
     ],
     "tags": [
-      {
-        "name": "Auth",
-        "description": "User authentication and account management"
-      },
       {
         "name": "Patient",
         "description": "Patient Details API"
@@ -34,23 +43,12 @@
       },
       {
         "name": "Appointment",
-        "description": "Appointment booking and management"
+        "description": "Appointment Details API"
       }
     ],
-    "components": {
-      "securitySchemes": {
-        "Token": {
-          "type": "apiKey",
-          "in": "header",
-          "name": "x-access-token",
-          "description": "JWT authentication token"
-        }
-      }
-    },
-    "security": [
-      {
-        "Token": []
-      }
+    "schemes": [
+      "https",
+      "http"
     ]
   },
   "apis": [
