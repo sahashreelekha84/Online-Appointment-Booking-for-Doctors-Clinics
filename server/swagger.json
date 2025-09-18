@@ -44,6 +44,10 @@
       {
         "name": "Appointment",
         "description": "Appointment Details API"
+      },
+         {
+        "name": "Blog",
+        "description": "Blog Details API"
       }
     ],
     "schemes": [
