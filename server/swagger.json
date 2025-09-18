@@ -53,6 +53,7 @@
   },
   "apis": [
     "app.js",
-    "./app/routes/*.js"
+    "./app/routes/*.js",
+    "./app/routes/api/*.js"
   ]
 }
