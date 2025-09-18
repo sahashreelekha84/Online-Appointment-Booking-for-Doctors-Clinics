@@ -1,5 +1,6 @@
 const Appointment = require("../../model/appointmentmodel");
-const Availability = require('../../model/availibility')
+const Availability = require('../../model/availibility');
+const Report = require("../../model/report");
 const SystemSettings=require('../../model/systemsettingmodel')
 class BookingController {
     // async bookAppointment(req, res) {
@@ -201,6 +202,62 @@ async  bookAppointment(req, res) {
     res.status(500).json({ message: "Error booking appointment", error: error.message });
   }
 }
+// Reschedule Appointment
+  async rescheduleAppointment(req, res) {
+    try {
+      const { date, timeSlot } = req.body;
+      const appointment = await Appointment.findById(req.params.id);
+
+      if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+      if (appointment.patientId.toString() !== req.user._id.toString())
+        return res.status(403).json({ message: "Not authorized" });
+
+      // Prevent past date
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const newDate = new Date(date);
+      newDate.setHours(0, 0, 0, 0);
+      if (newDate < today) return res.status(400).json({ message: "Cannot select past date" });
+
+      // Check doctor availability
+      const availability = await Availability.findById(appointment.availabilityId);
+      if (!availability) return res.status(404).json({ message: "Availability not found" });
+
+      const dayName = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+      if ((availability.isDayOff && availability.weekday === dayName) || availability.specialDayOffs.includes(date))
+        return res.status(400).json({ message: "Doctor unavailable on this day" });
+
+      if (!availability.timeSlots.includes(timeSlot))
+        return res.status(400).json({ message: "Invalid time slot" });
+
+      appointment.date = date;
+      appointment.timeSlot = timeSlot;
+      appointment.status = "booked";
+      await appointment.save();
+
+      res.status(200).json({ message: "Appointment rescheduled", appointment });
+
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Cancel Appointment (patient)
+  async cancelAppointment(req, res) {
+    try {
+      const appointment = await Appointment.findById(req.params.id);
+      if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+      if (appointment.patientId.toString() !== req.user._id.toString())
+        return res.status(403).json({ message: "Not authorized" });
+
+      appointment.status = "cancelled";
+      await appointment.save();
+      res.status(200).json({ message: "Appointment cancelled", appointment });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
     async getMyAppointments(req, res) {
         try {
             if (req.user.role !== "patient") {
@@ -233,5 +290,72 @@ async  bookAppointment(req, res) {
             res.status(500).json({ message: "Error fetching appointments", error: error.message });
         }
     };
+     // Doctor: Confirm Appointment
+  async confirmAppointment(req, res) {
+    try {
+      const appointment = await Appointment.findById(req.params.id);
+      if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+      if (appointment.doctorId.toString() !== req.user._id.toString())
+        return res.status(403).json({ message: "Not authorized" });
+
+      appointment.status = "confirmed";
+      await appointment.save();
+      res.status(200).json({ message: "Appointment confirmed", appointment });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Doctor: Cancel Appointment
+  async doctorCancelAppointment(req, res) {
+    try {
+      const appointment = await Appointment.findById(req.params.id);
+      if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+      if (appointment.doctorId.toString() !== req.user._id.toString())
+        return res.status(403).json({ message: "Not authorized" });
+
+      appointment.status = "cancelled";
+      await appointment.save();
+      res.status(200).json({ message: "Appointment cancelled by doctor", appointment });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Doctor: Complete appointment + report
+async completeAppointment(req, res) {
+  try {
+    const { reportReason } = req.body; // rename for clarity
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+    if (appointment.doctorId.toString() !== req.user._id.toString())
+      return res.status(403).json({ message: "Not authorized" });
+
+    // Mark appointment as completed
+    appointment.status = "completed";
+    await appointment.save();
+
+    // Create a report if reason is provided
+    let report = null;
+    if (reportReason) {
+      report = await Report.create({
+        reportedBy: req.user.id,  // doctor completing the appointment
+        type: "doctor",
+        targetId: appointment._id, // link to appointment
+        reason: reportReason,
+        status: "open"
+      });
+    }
+
+    res.status(200).json({
+      message: "Appointment completed" + (report ? " & report saved" : ""),
+      appointment,
+      report
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 }
 module.exports = new BookingController()

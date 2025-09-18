@@ -88,5 +88,124 @@ router.get("/patient/mypatient", AuthCheck, appointmentController.getMyAppointme
  *         description: Unauthorized
  */
 router.get("/doctor/mydoctor", AuthCheck, appointmentController.getDoctorAppointments);
+/**
+ * @swagger
+ * /api/appointment/doctor/confirm/{id}:
+ *   put:
+ *     summary: Doctor confirms an appointment
+ *     tags: [Appointment]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Appointment ID
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Authentication token
+ *     responses:
+ *       200:
+ *         description: Appointment confirmed
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+router.put(
+  "/doctor/confirm/:id",
+  AuthCheck,
+  appointmentController.confirmAppointment
+);
 
+/**
+ * @swagger
+ * /api/appointment/doctor/cancel/{id}:
+ *   put:
+ *     summary: Doctor cancels an appointment
+ *     tags: [Appointment]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Appointment ID
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
+ *     responses:
+ *       200:
+ *         description: Appointment cancelled successfully
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+router.put(
+  "/doctor/cancel/:id",
+  AuthCheck,
+  appointmentController.doctorCancelAppointment
+);
+
+/**
+ * @swagger
+ * /api/appointment/doctor/complete/{id}:
+ *   put:
+ *     summary: Doctor completes an appointment and optionally generates a report
+ *     tags: [Appointment]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Appointment ID
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reportReason:
+ *                 type: string
+ *                 example: "Patient reported mild symptoms"
+ *     responses:
+ *       200:
+ *         description: Appointment completed successfully
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Appointment not found
+ *       500:
+ *         description: Server error
+ */
+router.put(
+  "/doctor/complete/:id",
+  AuthCheck,
+  appointmentController.completeAppointment
+);
 module.exports = router;
