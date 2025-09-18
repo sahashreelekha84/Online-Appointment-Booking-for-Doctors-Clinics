@@ -16,8 +16,13 @@ const availabilityController = require("../../controller/api/availabilityControl
  *   post:
  *     summary: Create availability for a doctor
  *     tags: [Availability]
- *     security:
- *       - Token: []
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *     requestBody:
  *       required: true
  *       content:
@@ -62,9 +67,13 @@ router.post("/create", AuthCheck, availabilityController.createAvailability);
  *   get:
  *     summary: Get availability by doctor ID
  *     tags: [Availability]
- *     security:
- *       - Token: []
  *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *       - in: path
  *         name: doctorId
  *         required: true
@@ -84,9 +93,13 @@ router.get("/doctor/:doctorId", AuthCheck, availabilityController.getAvailabilit
  *   put:
  *     summary: Set a weekday as day off for doctor
  *     tags: [Availability]
- *     security:
- *       - Token: []
  *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *       - in: path
  *         name: doctorId
  *         required: true
@@ -119,8 +132,13 @@ router.put("/doctor/:doctorId/dayoff", AuthCheck, availabilityController.setDayO
  *   get:
  *     summary: Get all doctors availability
  *     tags: [Availability]
- *     security:
- *       - Token: []
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *     responses:
  *       200:
  *         description: List of all doctors availability
@@ -133,9 +151,13 @@ router.get("/", AuthCheck, availabilityController.getAllAvailability);
  *   post:
  *     summary: Add special day off for a doctor
  *     tags: [Availability]
- *     security:
- *       - Token: []
  *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *       - in: path
  *         name: doctorId
  *         required: true
@@ -171,9 +193,13 @@ router.post("/doctor/:doctorId/special-dayoff", AuthCheck, availabilityControlle
  *   delete:
  *     summary: Delete a special day off for a doctor
  *     tags: [Availability]
- *     security:
- *       - Token: []
  *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
  *       - in: path
  *         name: doctorId
  *         required: true
