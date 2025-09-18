@@ -13,10 +13,12 @@ async createBlog(req, res) {
     if (req.user.roleName !== "doctor") {
       return res.status(403).json({ message: "Only doctors can post the blog" });
     }
+
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
     }
 
+    // Create blog object
     const blog = new BlogModel({
       title,
       description,
@@ -24,24 +26,28 @@ async createBlog(req, res) {
       is_deleted: is_deleted || false,
     });
 
+    // Handle image upload
     if (req.file) {
-      // Build full URL using filename
-      const baseUrl = req.protocol + "://" + req.get("host");
-      blog.image = `${baseUrl}/uploads/blog/${req.file.filename}`;
+      blog.image = `uploads/blog/${req.file.filename}`; // store relative path
     }
 
     await blog.save();
-    console.log(blog);
 
+    // Prepend base URL for response
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
     res.status(201).json({
       message: "Blog created successfully",
-      blog,
+      blog: {
+        ...blog.toObject(),
+        image: blog.image ? `${baseUrl}/${blog.image}` : null,
+      },
     });
   } catch (error) {
     console.error("Create blog error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
+
 
 
   // Get all blogs (non-deleted)
