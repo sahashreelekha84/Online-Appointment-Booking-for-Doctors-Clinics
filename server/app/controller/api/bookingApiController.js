@@ -325,25 +325,35 @@ async  bookAppointment(req, res) {
   // Doctor: Complete appointment + report
 async completeAppointment(req, res) {
   try {
-    const { reportReason } = req.body; // rename for clarity
+    
     const appointment = await Appointment.findById(req.params.id);
+   console.log('appointment',appointment);
+console.log('req',req.user.id);
+    
     if (!appointment) return res.status(404).json({ message: "Appointment not found" });
 
-    if (appointment.doctorId!== req.user.id)
+    if (appointment.doctorId!=req.user.id)
       return res.status(403).json({ message: "Not authorized" });
 
     // Mark appointment as completed
     appointment.status = "completed";
     await appointment.save();
 
+
+
+const {reason} = req.body; // rename for clarity
+console.log('ressson',reason);
+if (!reason) {
+  return res.status(400).json({ message: "Reason is required to complete an appointment" });
+}
     // Create a report if reason is provided
     let report = null;
-    if (reportReason) {
+    if (reason) {
       report = await Report.create({
         reportedBy: req.user.id,  // doctor completing the appointment
         type: "doctor",
         targetId: appointment._id, // link to appointment
-        reason: reportReason,
+        reason,
         status: "open"
       });
     }
@@ -354,6 +364,8 @@ async completeAppointment(req, res) {
       report
     });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ message: error.message });
   }
 }

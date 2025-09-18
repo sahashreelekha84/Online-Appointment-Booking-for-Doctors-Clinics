@@ -270,7 +270,7 @@ router.put(
  *           schema:
  *             type: object
  *             properties:
- *               reportReason:
+ *               reason:
  *                 type: string
  *                 example: "Patient reported mild symptoms"
  *     responses:
