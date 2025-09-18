@@ -41,10 +41,41 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *     responses:
  *       201:
  *         description: Blog created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Blog created successfully"
+ *                 blog:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "64fabc1234567"
+ *                     title:
+ *                       type: string
+ *                       example: "My First Blog"
+ *                     description:
+ *                       type: string
+ *                       example: "This is the body of my blog..."
+ *                     doctorId:
+ *                       type: string
+ *                       example: "68cbf0ddfef979466c503d94"
+ *                     image:
+ *                       type: string
+ *                       example: "https://online-appointment-booking-for-doctors.onrender.com/uploads/blog/1695123456789-a1.png"
+ *                     is_deleted:
+ *                       type: boolean
+ *                       example: false
  *       400:
- *         description: Bad Request
+ *         description: Bad Request (e.g., missing title or image)
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized (invalid or missing token)
+ *       403:
+ *         description: Forbidden (user is not a doctor)
  *       500:
  *         description: Internal Server Error
  */
