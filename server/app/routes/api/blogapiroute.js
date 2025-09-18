@@ -29,15 +29,17 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *               - description
  *               - image
  *             properties:
- *               title:
- *                 type: string
- *                 example: "My First Blog"
- *               description:
- *                 type: string
- *                 example: "This is the body of my blog..."
  *               image:
  *                 type: string
  *                 format: binary
+ *                 description: Blog image file
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               is_deleted:
+ *                 type: boolean
+ *                 description: Optional flag to mark blog as deleted
  *     responses:
  *       201:
  *         description: Blog created successfully
@@ -66,19 +68,12 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *                       example: "68cbf0ddfef979466c503d94"
  *                     image:
  *                       type: string
- *                       example: "https://online-appointment-booking-for-doctors.onrender.com/uploads/blog/1695123456789-a1.png"
+ *                       example: "https://yourdomain.com/uploads/blog/1695123456789-a1.png"
  *                     is_deleted:
  *                       type: boolean
  *                       example: false
- *       400:
- *         description: Bad Request (e.g., missing title or image)
- *       401:
- *         description: Unauthorized (invalid or missing token)
- *       403:
- *         description: Forbidden (user is not a doctor)
- *       500:
- *         description: Internal Server Error
  */
+
 router.post(
   '/create/blog',
   AuthCheck, // ensure user is logged in
