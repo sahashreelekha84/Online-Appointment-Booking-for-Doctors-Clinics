@@ -195,13 +195,13 @@ class DoctorController {
 
             const user = await doctorModel.findOne({ email });
             if (!user) return res.status(404).json({ message: 'User not found' });
-            const { error } = passwordSchema.validate({ password });
-            if (error) {
-                return res.status(400).json({
-                    status: false,
-                    message: error.details[0].message,
-                });
-            }
+            // const { error } = passwordSchema.validate({ password });
+            // if (error) {
+            //     return res.status(400).json({
+            //         status: false,
+            //         message: error.details[0].message,
+            //     });
+            // }
             const token = Jwt.sign(
                 { _id: user._id, email: user.email },
                 process.env.JWT_SECRECT_KEY,
