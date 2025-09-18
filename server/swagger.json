@@ -40,8 +40,11 @@
       {
         "name": "Doctor",
         "description": "Doctor Details API"
+      },
+      {
+        "name": "Appointment",
+        "description": "Appointment Details API"
       }
-   
     ],
     "schemes": [
       "https",
