@@ -27,7 +27,7 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *               title:
  *                 type: string
  *                 example: "My First Blog"
- *               content:
+ *               description:
  *                 type: string
  *                 example: "This is the body of my blog..."
  *               image:
