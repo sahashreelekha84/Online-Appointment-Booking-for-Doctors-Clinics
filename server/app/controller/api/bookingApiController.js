@@ -310,6 +310,7 @@ async  bookAppointment(req, res) {
   async doctorCancelAppointment(req, res) {
     try {
       const appointment = await Appointment.findById(req.params.id);
+      
       if (!appointment) return res.status(404).json({ message: "Appointment not found" });
       if (appointment.doctorId !== req.user.id)
         return res.status(403).json({ message: "Not authorized" });
