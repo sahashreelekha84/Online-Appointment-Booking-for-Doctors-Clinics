@@ -32,7 +32,7 @@ async createBlog(req, res) {
     });
 
     if (req.file) {
-      blog.image = req.file.path; // just store filename
+      blog.image = req.file.filename; // just store filename
     }
 
     await blog.save();
