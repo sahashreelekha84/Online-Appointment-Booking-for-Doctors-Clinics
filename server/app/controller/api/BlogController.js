@@ -5,68 +5,67 @@ const fsPromises = require("fs").promises;
 
 class BlogController {
   // Create a new blog
-async createBlog(req, res) {
-  try {
-    const { title, description, is_deleted } = req.body;
-    const doctorId = req.user.id;
+  async createBlog(req, res) {
+    try {
+      const { title, description, is_deleted } = req.body;
+      const doctorId = req.user.id;
 
-    // Only doctors can post
-    if (req.user.roleName !== "doctor") {
-      return res.status(403).json({ message: "Only doctors can post a blog" });
+      // Only doctors can post
+      if (req.user.roleName !== "doctor") {
+        return res.status(403).json({ message: "Only doctors can post a blog" });
+      }
+
+      // Validation
+      if (!title) {
+        return res.status(400).json({ message: "Title is required" });
+      }
+      if (!description) {
+        return res.status(400).json({ message: "Description is required" });
+      }
+
+      // Create blog object
+      const blog = new BlogModel({
+        title,
+        description,
+        doctorId,
+        is_deleted: is_deleted || false,
+      });
+
+      if (req.file) {
+        blog.image = req.file.filename; // just store filename
+      }
+
+      await blog.save();
+
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      res.status(201).json({
+        message: "Blog created successfully",
+        blog: {
+          ...blog.toObject(),
+          image: blog.image ? `${baseUrl}/uploads/blog/${blog.image}` : null,
+        },
+      });
+    } catch (error) {
+      console.error("Create blog error:", error);
+      if (error.name === "ValidationError") {
+        return res.status(400).json({ message: error.message });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
     }
-
-    // Validation
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
-    }
-    if (!description) {
-      return res.status(400).json({ message: "Description is required" });
-    }
-
-    // Create blog object
-    const blog = new BlogModel({
-      title,
-      description,
-      doctorId,
-      is_deleted: is_deleted || false,
-    });
-
-    if (req.file) {
-      blog.image = req.file.filename; // just store filename
-    }
-
-    await blog.save();
-
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    res.status(201).json({
-      message: "Blog created successfully",
-      blog: {
-        ...blog.toObject(),
-        image: blog.image ? `${baseUrl}/uploads/blog/${blog.image}` : null,
-      },
-    });
-  } catch (error) {
-    console.error("Create blog error:", error);
-    if (error.name === "ValidationError") {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: "Internal Server Error" });
   }
-}
-
-
 
 
   // Get all blogs (non-deleted)
   async getAllBlogs(req, res) {
     try {
-      const blogs = await BlogModel.find({ is_deleted: false, isApproved: true }).populate("authorId", "name");
+      const blogs = await BlogModel.find({ is_deleted: false, isApproved: true }).populate("doctorId", "name");
       res.status(200).json({ blogs });
     } catch (error) {
       console.error("Get blogs error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
     }
   }
+
   async commentcreate(req, res) {
     try {
       const { id } = req.params;
