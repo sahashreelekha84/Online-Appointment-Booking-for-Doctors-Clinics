@@ -43,7 +43,7 @@ const { AuthCheck } = require('../../middleware/AuthCheck');
  *               reportId:
  *                 type: string
  *                 example: "64f2a3bfa2d4c9c2b03d7b66"
- *                 description: Optional: ID of the related report
+ *                 description: "Optional: ID of the related report"
  *               rating:
  *                 type: integer
  *                 minimum: 1
