@@ -30,11 +30,10 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *                 description: Blog image file
  *               title:
  *                 type: string
+ *                 description: Blog title
  *               description:
  *                 type: string
- *               is_deleted:
- *                 type: boolean
- *                 description: Optional flag to mark blog as deleted
+ *                 description: Blog description/content
  *     responses:
  *       201:
  *         description: Blog created successfully
