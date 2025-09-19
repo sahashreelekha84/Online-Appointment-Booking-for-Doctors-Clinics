@@ -13,6 +13,13 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *       - Blog
  *     security:
  *       - Token: []   # JWT via x-access-token header
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: JWT authentication token
  *     requestBody:
  *       required: true
  *       content:
@@ -31,9 +38,15 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *               title:
  *                 type: string
  *                 description: Blog title
+ *                 example: "My First Blog"
  *               description:
  *                 type: string
- *                 description: Blog description/content
+ *                 description: Blog content
+ *                 example: "This is the body of my blog..."
+ *               is_deleted:
+ *                 type: boolean
+ *                 description: Optional flag to mark blog as deleted
+ *                 example: false
  *     responses:
  *       201:
  *         description: Blog created successfully
