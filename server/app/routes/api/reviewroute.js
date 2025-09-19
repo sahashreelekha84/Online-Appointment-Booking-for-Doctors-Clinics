@@ -10,7 +10,60 @@ const { AuthCheck } = require('../../middleware/AuthCheck');
  *   description: Manage reviews after appointment completion
  */
 
-// Patient: Submit review after appointment completion
+/**
+ * @swagger
+ * /api/review:
+ *   post:
+ *     summary: Submit a review after appointment completion (patient only)
+ *     tags: [Review]
+ *     security:
+ *       - Token: []
+ *     parameters:
+ *       - in: header
+ *         name: x-access-token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Your authentication token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - appointmentId
+ *               - rating
+ *               - comment
+ *             properties:
+ *               appointmentId:
+ *                 type: string
+ *                 example: "64f2a3bfa2d4c9c2b03d7b55"
+ *                 description: The ID of the completed appointment
+ *               reportId:
+ *                 type: string
+ *                 example: "64f2a3bfa2d4c9c2b03d7b66"
+ *                 description: Optional: ID of the related report
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 example: 5
+ *                 description: Rating out of 5
+ *               comment:
+ *                 type: string
+ *                 example: "Doctor was very helpful and attentive."
+ *     responses:
+ *       201:
+ *         description: Review submitted successfully
+ *       400:
+ *         description: Invalid input or appointment not completed
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+
 router.post(
   '/',
   AuthCheck, // must be logged in as patient
