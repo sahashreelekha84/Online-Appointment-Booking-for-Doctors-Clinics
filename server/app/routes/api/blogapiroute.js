@@ -11,13 +11,8 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *     summary: Create a new blog
  *     tags:
  *       - Blog
- *     parameters:
- *       - in: header
- *         name: x-access-token
- *         required: true
- *         schema:
- *           type: string
- *         description: Your authentication token
+ *     security:
+ *       - Token: []   # JWT via x-access-token header
  *     requestBody:
  *       required: true
  *       content:
@@ -43,35 +38,14 @@ const { AuthCheck } = require('../../middleware/AuthCheck') // middleware for au
  *     responses:
  *       201:
  *         description: Blog created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Blog created successfully"
- *                 blog:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: "64fabc1234567"
- *                     title:
- *                       type: string
- *                       example: "My First Blog"
- *                     description:
- *                       type: string
- *                       example: "This is the body of my blog..."
- *                     doctorId:
- *                       type: string
- *                       example: "68cbf0ddfef979466c503d94"
- *                     image:
- *                       type: string
- *                       example: "https://yourdomain.com/uploads/blog/1695123456789-a1.png"
- *                     is_deleted:
- *                       type: boolean
- *                       example: false
+ *       400:
+ *         description: Bad Request (missing/invalid fields)
+ *       401:
+ *         description: Unauthorized (invalid/missing token)
+ *       403:
+ *         description: Forbidden (only doctors can post)
+ *       500:
+ *         description: Server Error
  */
 
 router.post(
