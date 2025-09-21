@@ -119,7 +119,7 @@ class PatientController {
                 dob,
                 phone,
                 roleId: role._id,
-                role:role.name,
+                role: role.name,
                 otp,
                 otpExpiry,
             });
@@ -129,7 +129,7 @@ class PatientController {
             }
 
             const data = await pdata.save();
-             console.log(data);
+            console.log(data);
 
 
             await transporter.sendMail({
@@ -274,7 +274,8 @@ class PatientController {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                profileImg: user.profileImg
             }, process.env.JWT_SECRECT_KEY, { expiresIn: "2h" })
             return res.status(200).json({
                 status: true,
@@ -284,6 +285,7 @@ class PatientController {
                     name: user.name,
                     email: user.email,
                     role: user.role,
+                    profileImg: user.profileImg,
 
 
 
@@ -299,7 +301,7 @@ class PatientController {
             })
         }
     }
-  async updatepatient(req, res) {
+    async updatepatient(req, res) {
         try {
             const userId = req.user.id;
             const existpatient = await userModel.findById(userId)
@@ -442,7 +444,7 @@ class PatientController {
             })
         }
     }
-     async logout(req, res) {
+    async logout(req, res) {
         try {
             return res.status(200).json({
                 status: true,
